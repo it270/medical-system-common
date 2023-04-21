@@ -5,6 +5,11 @@
     <RootNamespace>It270.MedicalSystem.Common</RootNamespace>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <!-- NuGet metadata -->
+    <PackageId>It270.MedicalSystem.Common</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>César Galvis</Authors>
+    <Company>it270</Company>
   </PropertyGroup>
 
   <ItemGroup>
