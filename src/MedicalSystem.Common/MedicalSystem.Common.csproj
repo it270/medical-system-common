@@ -10,6 +10,7 @@
     <Version>0.0.1</Version>
     <Authors>César Galvis</Authors>
     <Company>it270</Company>
+    <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
 
   <ItemGroup>
