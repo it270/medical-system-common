@@ -30,7 +30,8 @@ jobs:
       - name: Pack
         run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
       - name: Push
-        run: dotnet nuget push ${PROJECT_NAME}.${VERSION}.nupkg --source "github" --api-key ${GITHUB_TOKEN}
+        run: dotnet nuget push ${PROJECT_NAME}.${VERSION}.nupkg --source https://nuget.pkg.github.com/${REPO_OWNER}/index.json --api-key ${GITHUB_TOKEN}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+          REPO_OWNER: github.repository_owner
