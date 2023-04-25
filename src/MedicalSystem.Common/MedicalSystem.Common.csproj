@@ -7,7 +7,7 @@
     <Nullable>disable</Nullable>
     <!-- NuGet metadata -->
     <PackageId>It270.MedicalSystem.Common</PackageId>
-    <Version>0.0.1</Version>
+    <Version>6.0.0</Version>
     <Authors>César Galvis</Authors>
     <Company>it270</Company>
     <EnablePackageValidation>true</EnablePackageValidation>

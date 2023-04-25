@@ -9,7 +9,7 @@ using System;
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Controllers.Tools;
 
 public class WebTools<T> : IWebTools
-where T : class, IStatusCodeActionResult, IActionResult, new()
+where T : class, IStatusCodeActionResult, IActionResult
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

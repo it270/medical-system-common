@@ -1,4 +1,4 @@
-# Example from https://www.meziantou.net/publishing-a-nuget-package-following-best-practices-using-github.htm
+# Example from https://www.meziantou.net/publishing-a-nuget-package-following-best-practices-using-github.htm and https://acraven.medium.com/a-nuget-package-workflow-using-github-actions-7da8c6557863
 
 name: Build NuGet package
 run-name: ${{ github.actor }} is publishing an package

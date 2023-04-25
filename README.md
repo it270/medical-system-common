@@ -12,8 +12,7 @@ dotnet build
 # Pack project as NuGet package (Release profile)
 dotnet pack -c Release
 # Install package (local environment)
-dotnet nuget add source -n It270.MedicalSystem.Common src/MedicalSystem.Common/bin/Release/It270.MedicalSystem.Common.$VERSION.nupkg
-
+dotnet nuget add source -n It270.Local src/MedicalSystem.Common/bin/Release/It270.MedicalSystem.Common.$VERSION.nupkg
 ```
 
 ## Useful commands
@@ -22,5 +21,5 @@ dotnet nuget add source -n It270.MedicalSystem.Common src/MedicalSystem.Common/b
 # List all sources
 dotnet nuget list source
 # Remove current project source
-dotnet nuget remove source It270.MedicalSystem.Common
+dotnet nuget remove source It270.Local
 ```
