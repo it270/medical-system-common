@@ -3,6 +3,9 @@ using It270.MedicalSystem.Common.Application.Core.Helpers.General;
 
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Interfaces;
 
+/// <summary>
+/// Custom web tools
+/// </summary>
 public interface IWebTools
 {
     /// <summary>
