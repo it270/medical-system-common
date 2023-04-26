@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using It270.MedicalSystem.Common.Application.Core.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,13 +60,13 @@ public static class ConfigCommonServices
                         //This is necessary because Cognito tokens doesn't have "aud" claim. Instead the audience is set in "client_id"
                         var castedToken = securityToken as JwtSecurityToken;
                         var hasAud = castedToken.Claims
-                            .Any(a => a.Type == "client_id" && a.Value == audience);
+                            .Any(a => a.Type == IamConstants.Audience && a.Value == audience);
                         return hasAud;
                     },
                     ValidAudience = audience,
                     ValidateAudience = true,
                     ClockSkew = TimeSpan.Zero,
-                    RoleClaimType = "cognito:groups"
+                    RoleClaimType = IamConstants.Role
                 };
             });
 
