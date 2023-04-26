@@ -1,3 +1,4 @@
+using It270.MedicalSystem.Common.Presentation.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
 using Serilog.Core;
 using Serilog.Events;
@@ -13,6 +14,7 @@ where T : class, IHttpContextAccessor, new()
     private readonly IHttpContextAccessor _httpContextAccessor;
     private const string CLIENT_USER_PROPERTY_NAME = "UserName";
     private const string CLIENT_USER_ITEM_KEY = "Serilog_UserName";
+    private const string USER_ANONYMOUS = "anonymous";
 
     public UserEnricher() : this(new T())
     { }
@@ -35,13 +37,11 @@ where T : class, IHttpContextAccessor, new()
             return;
         }
 
-        string userName = httpContext?.User?.Identity?.Name ?? "anonymous";
+        string userName = httpContext?.GetUserName() ?? USER_ANONYMOUS;
 
         var userNameProperty = new LogEventProperty(CLIENT_USER_PROPERTY_NAME, new ScalarValue(userName));
         httpContext.Items.Add(CLIENT_USER_ITEM_KEY, userNameProperty);
 
         logEvent.AddPropertyIfAbsent(userNameProperty);
-
-        // logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(CLIENT_USER_PROPERTY_NAME, _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "anonymous"));
     }
 }
