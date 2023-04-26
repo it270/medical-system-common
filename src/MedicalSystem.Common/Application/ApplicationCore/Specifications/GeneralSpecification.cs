@@ -12,6 +12,9 @@ public abstract class GeneralSpecification<T, E> : Specification<E>
 where T : notnull
 where E : class, IAggregateRoot
 {
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public GeneralSpecification()
     { }
 

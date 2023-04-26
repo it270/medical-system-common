@@ -26,6 +26,7 @@ public static class DistributedCacheExtensions
     /// Set cache value (with default options)
     /// </summary>
     /// <typeparam name="T">Value type</typeparam>
+    /// <param name="cache">Distributed cache of serialized values</param>
     /// <param name="key">Cache key</param>
     /// <param name="value">Cache value</param>
     public static Task SetAsyncDefault<T>(this IDistributedCache cache, string key, T value)
@@ -41,6 +42,7 @@ public static class DistributedCacheExtensions
     /// Set cache value (without options)
     /// </summary>
     /// <typeparam name="T">Value type</typeparam>
+    /// <param name="cache">Distributed cache of serialized values</param>
     /// <param name="key">Cache key</param>
     /// <param name="value">Cache value</param>
     public static Task SetAsync<T>(this IDistributedCache cache, string key, T value)
@@ -52,6 +54,7 @@ public static class DistributedCacheExtensions
     /// Set cache value
     /// </summary>
     /// <typeparam name="T">Value type</typeparam>
+    /// <param name="cache">Distributed cache of serialized values</param>
     /// <param name="key">Cache key</param>
     /// <param name="value">Cache value</param>
     /// <param name="options">Cache entry options</param>
@@ -65,6 +68,7 @@ public static class DistributedCacheExtensions
     /// Try get cache value
     /// </summary>
     /// <typeparam name="T">Value type</typeparam>
+    /// <param name="cache">Distributed cache of serialized values</param>
     /// <param name="key">Cache key</param>
     /// <param name="value">Cache value</param>
     /// <returns>True if value exists. False otherwise</returns>

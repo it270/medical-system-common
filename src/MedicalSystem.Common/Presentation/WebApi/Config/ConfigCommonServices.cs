@@ -11,8 +11,17 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Config;
 
+/// <summary>
+/// Common services configuration with dependency injection
+/// </summary>
 public static class ConfigCommonServices
 {
+    /// <summary>
+    /// Add all common services
+    /// </summary>
+    /// <param name="services">Service descriptors collection</param>
+    /// <param name="configuration">System configuration</param>
+    /// <returns>Service descriptors collection with common services</returns>
     public static async Task<IServiceCollection> AddCommonServices(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -60,7 +69,7 @@ public static class ConfigCommonServices
                         //This is necessary because Cognito tokens doesn't have "aud" claim. Instead the audience is set in "client_id"
                         var castedToken = securityToken as JwtSecurityToken;
                         var hasAud = castedToken.Claims
-                            .Any(a => a.Type == IamConstants.Audience && a.Value == audience);
+                            .Any(a => a.Type == IamConstants.Aud && a.Value == audience);
                         return hasAud;
                     },
                     ValidAudience = audience,

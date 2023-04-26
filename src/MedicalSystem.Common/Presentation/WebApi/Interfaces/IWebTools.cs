@@ -11,7 +11,7 @@ public interface IWebTools
     /// <summary>
     /// Get base URL 
     /// </summary>
-    /// <returns>Current project URL base</returns>
+    /// <returns>Current project base URL</returns>
     string GetBaseUrl();
 
     /// <summary>

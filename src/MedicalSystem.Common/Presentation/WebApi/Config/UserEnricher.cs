@@ -6,7 +6,7 @@ using Serilog.Events;
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Config;
 
 /// <summary>
-/// Serilog user name enricher
+/// Serilog custom user name enricher
 /// </summary>
 public class UserEnricher<T> : ILogEventEnricher
 where T : class, IHttpContextAccessor, new()
@@ -16,14 +16,25 @@ where T : class, IHttpContextAccessor, new()
     private const string CLIENT_USER_ITEM_KEY = "Serilog_UserName";
     private const string USER_ANONYMOUS = "anonymous";
 
+    /// <summary>
+    /// Initialize enricher
+    /// </summary>
     public UserEnricher() : this(new T())
     { }
 
+    /// <summary>
+    /// Initialize enricher
+    /// </summary>
     public UserEnricher(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
+    /// <summary>
+    /// Enrich logs with current user name
+    /// </summary>
+    /// <param name="logEvent">Serilog log event</param>
+    /// <param name="propertyFactory">Serilog property factory</param>
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         var httpContext = _httpContextAccessor.HttpContext;

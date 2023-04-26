@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Extensions;
 
+/// <summary>
+/// General HTTP context extensions
+/// </summary>
 public static class HttpContextExtensions
 {
     /// <summary>

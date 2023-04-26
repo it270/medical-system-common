@@ -3,6 +3,9 @@ using It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
 
+/// <summary>
+/// General string extensions
+/// </summary>
 public static class StringExtensions
 {
     #region Cast functions

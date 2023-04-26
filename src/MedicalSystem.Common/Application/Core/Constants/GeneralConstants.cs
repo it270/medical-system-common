@@ -7,6 +7,9 @@ public static class GeneralConstants
 {
     #region System initialization
 
+    /// <summary>
+    /// Default administrator user name
+    /// </summary>
     public const string SuperAdminUserName = "Admin";
 
     #endregion

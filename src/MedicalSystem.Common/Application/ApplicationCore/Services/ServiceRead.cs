@@ -25,10 +25,24 @@ public abstract class ServiceRead<E, DTO, ET, GS> : IServiceRead<DTO, ET>
     where E : class, IAggregateRoot
     where GS : GeneralSpecification<ET, E>
 {
+    /// <summary>
+    /// Generic entity repository
+    /// </summary>
     protected readonly IRepository<E> _entityRepository;
+
+    /// <summary>
+    /// General mapper
+    /// </summary>
     protected readonly IMapper _mapper;
+
+    /// <summary>
+    /// General logger
+    /// </summary>
     protected readonly ILogger _logger;
 
+    /// <summary>
+    /// Initialize service
+    /// </summary>
     public ServiceRead(IRepository<E> entityRepository,
         IMapper mapper,
         ILogger logger)

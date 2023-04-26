@@ -11,6 +11,7 @@
     <Authors>César Galvis</Authors>
     <Company>it270</Company>
     <EnablePackageValidation>true</EnablePackageValidation>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

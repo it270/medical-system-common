@@ -7,11 +7,34 @@ public static class IamConstants
 {
     #region User attributes
 
-    public const string Audience = "client_id";
+    /// <summary>
+    /// Audience input name
+    /// </summary>
+    public const string Aud = "client_id";
+
+    /// <summary>
+    /// User name input name
+    /// </summary>
     public const string UserName = "username";
+
+    /// <summary>
+    /// Subject input name
+    /// </summary>
     public const string Sub = "sub";
+
+    /// <summary>
+    /// Role input name
+    /// </summary>
     public const string Role = "cognito:groups";
+
+    /// <summary>
+    /// Email input name
+    /// </summary>
     public const string Email = "email";
+
+    /// <summary>
+    /// Phone number input name
+    /// </summary>
     public const string PhoneNumber = "phone_number";
 
     #endregion

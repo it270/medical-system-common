@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
 
+/// <summary>
+/// General file extensions
+/// </summary>
 public static class FileExtensions
 {
     /// <summary>
