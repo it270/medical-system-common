@@ -1,8 +1,8 @@
-using System.IO;
 using System.Net.Mime;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
 using It270.MedicalSystem.Common.Application.Core.Constants;
 using Microsoft.AspNetCore.Http;
+using Moq;
 using NUnit.Framework;
 
 namespace It270.MedicalSystem.Common.UnitTests.Application.ApplicationCore.Extensions;
@@ -27,8 +27,9 @@ public class FileExtensionsTests
     public void IsEmpty_ShouldReturnTrue_WhenFileLengthIsZero()
     {
         // Arrange
-        using var stream = new MemoryStream();
-        var file = new FormFile(stream, 0, 0, "testfile", "test.jpg");
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.Length).Returns(0);
+        var file = fileMock.Object;
 
         // Act
         var result = file.IsEmpty();
@@ -41,8 +42,9 @@ public class FileExtensionsTests
     public void IsEmpty_ShouldReturnFalse_WhenFileLengthIsGreaterThanZero()
     {
         // Arrange
-        using var stream = new MemoryStream();
-        var file = new FormFile(stream, 0, 100, "testfile", "test.jpg");
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.Length).Returns(1);
+        var file = fileMock.Object;
 
         // Act
         var result = file.IsEmpty();
@@ -52,13 +54,12 @@ public class FileExtensionsTests
     }
 
     [Test]
-    [Ignore("Ignore file test")]
     public void IsImageJpeg_ShouldReturnTrue_WhenContentTypeIsImageJpeg()
     {
         // Arrange
-        using var stream = new MemoryStream();
-        var file = new FormFile(stream, 0, 0, "testfile", "test.jpg");
-        file.ContentType = MediaTypeNames.Image.Jpeg;
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.ContentType).Returns(MediaTypeNames.Image.Jpeg);
+        var file = fileMock.Object;
 
         // Act
         var result = file.IsImageJpeg();
@@ -68,13 +69,12 @@ public class FileExtensionsTests
     }
 
     [Test]
-    [Ignore("Ignore file test")]
     public void IsImageJpeg_ShouldReturnFalse_WhenContentTypeIsNotImageJpeg()
     {
         // Arrange
-        using var stream = new MemoryStream();
-        var file = new FormFile(stream, 0, 0, "testfile", "test.jpg");
-        file.ContentType = MediaTypeNames.Text.Plain;
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.ContentType).Returns(MediaTypeNames.Text.Plain);
+        var file = fileMock.Object;
 
         // Act
         var result = file.IsImageJpeg();
@@ -87,8 +87,9 @@ public class FileExtensionsTests
     public void HasValidSize_ShouldReturnTrue_WhenFileSizeIsLessThanOrEqualToLimit()
     {
         // Arrange
-        using var stream = new MemoryStream();
-        var file = new FormFile(stream, 0, 100, "testfile", "test.jpg");
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.Length).Returns(1);
+        var file = fileMock.Object;
 
         // Act
         var result = file.HasValidSize();
@@ -101,8 +102,9 @@ public class FileExtensionsTests
     public void HasValidSize_ShouldReturnFalse_WhenFileSizeIsGreaterThanLimit()
     {
         // Arrange
-        using var stream = new MemoryStream();
-        var file = new FormFile(stream, 0, GeneralConstants.FileSizeLimit + 1, "testfile", "test.jpg");
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.Length).Returns(GeneralConstants.FileSizeLimit + 1);
+        var file = fileMock.Object;
 
         // Act
         var result = file.HasValidSize();
