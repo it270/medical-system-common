@@ -39,8 +39,16 @@ public abstract class WebToolsBase : ControllerBase, IWebTools
     public virtual IActionResult CustomResponse(CustomWebResponse response)
     {
         if (response.Success)
-            return StatusCode((int)HttpStatusCode.OK, response.ResponseBody);
+            return Ok(response.ResponseBody);
         else
-            return StatusCode((int)response.StatusCode, response.ResponseBody);
+        {
+            var errorObject = new
+            {
+                error = response.Message,
+                data = response.ResponseBody,
+            };
+
+            return StatusCode((int)response.StatusCode, errorObject);
+        }
     }
 }

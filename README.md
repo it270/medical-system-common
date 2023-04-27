@@ -22,4 +22,6 @@ dotnet nuget add source -n It270.Local src/MedicalSystem.Common/bin/Release/It27
 dotnet nuget list source
 # Remove current project source
 dotnet nuget remove source It270.Local
+# Clear local NuGet cache
+dotnet nuget locals all --clear
 ```
