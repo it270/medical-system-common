@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,10 @@ public static class ConfigMessageBroker
 
         services.AddMassTransit(busConfigurator =>
         {
+            // Add consumers by reflection
+            busConfigurator.AddConsumers(Assembly.GetEntryAssembly());
+
+            // MassTransit general setup
             busConfigurator.SetKebabCaseEndpointNameFormatter();
             busConfigurator.UsingRabbitMq((context, busFactoryConfigurator) =>
             {
