@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using It270.MedicalSystem.Common.Application.Core.Helpers.General;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,9 @@ public static class ConfigMessageBroker
         string rabbitMqUser = Environment.GetEnvironmentVariable("SYSTEM_MB_USER");
         string rabbitMqPass = Environment.GetEnvironmentVariable("SYSTEM_MB_PASS");
 
+        var settings = configuration.Get<CustomConfig>();
+        string projectName = settings?.Project?.Name ?? "EmptyProjectName";
+
         services.AddMassTransit(busConfigurator =>
         {
             // Add consumers by reflection
@@ -38,6 +42,8 @@ public static class ConfigMessageBroker
                     hostConfigurator.Username(rabbitMqUser);
                     hostConfigurator.Password(rabbitMqPass);
                 });
+
+                busFactoryConfigurator.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(projectName, false));
             });
         });
 
