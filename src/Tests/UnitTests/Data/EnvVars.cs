@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace It270.MedicalSystem.Common.UnitTests.Data;
+namespace It270.MedicalSystem.Common.Tests.UnitTests.Data;
 
 public static class EnvVars
 {

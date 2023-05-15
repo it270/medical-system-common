@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 
-namespace It270.MedicalSystem.Common.UnitTests.Presentation.WebApi.Extension;
+namespace It270.MedicalSystem.Common.Tests.UnitTests.Presentation.WebApi.Extension;
 
 [TestFixture]
 public class HttpContextExtensionsTests

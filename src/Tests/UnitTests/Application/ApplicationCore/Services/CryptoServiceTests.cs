@@ -1,9 +1,9 @@
 using System;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Services;
-using It270.MedicalSystem.Common.UnitTests.Data;
+using It270.MedicalSystem.Common.Tests.UnitTests.Data;
 using NUnit.Framework;
 
-namespace It270.MedicalSystem.Common.UnitTests.Application.ApplicationCore.Services;
+namespace It270.MedicalSystem.Common.Tests.UnitTests.Application.ApplicationCore.Services;
 
 [TestFixture]
 public class CryptoToolsTests

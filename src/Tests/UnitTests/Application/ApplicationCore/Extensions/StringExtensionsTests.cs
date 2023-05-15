@@ -1,9 +1,9 @@
 using System;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
-using It270.MedicalSystem.Common.UnitTests.Data;
+using It270.MedicalSystem.Common.Tests.UnitTests.Data;
 using NUnit.Framework;
 
-namespace It270.MedicalSystem.Common.UnitTests.Application.ApplicationCore.Extensions;
+namespace It270.MedicalSystem.Common.Tests.UnitTests.Application.ApplicationCore.Extensions;
 
 [TestFixture]
 public class StringExtensionsTests

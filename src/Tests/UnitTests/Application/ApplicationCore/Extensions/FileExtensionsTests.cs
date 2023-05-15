@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 
-namespace It270.MedicalSystem.Common.UnitTests.Application.ApplicationCore.Extensions;
+namespace It270.MedicalSystem.Common.Tests.UnitTests.Application.ApplicationCore.Extensions;
 
 [TestFixture]
 public class FileExtensionsTests
