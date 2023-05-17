@@ -13,13 +13,4 @@ public static class GeneralConstants
     public const string SuperAdminUserName = "Admin";
 
     #endregion
-
-    #region Storage
-
-    /// <summary>
-    /// System file size limit (in bytes)
-    /// </summary>
-    public const int FileSizeLimit = 1048576; // 1 MB
-
-    #endregion
 }
