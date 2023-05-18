@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +38,14 @@ public static class ConfigMessageBroker
             busConfigurator.SetKebabCaseEndpointNameFormatter();
             busConfigurator.UsingRabbitMq((context, busFactoryConfigurator) =>
             {
+                // Json serializer setup
+                busFactoryConfigurator.ConfigureJsonSerializerOptions(opts =>
+                {
+                    // Add enumerator converter
+                    opts.Converters.Add(new JsonStringEnumConverter());
+                    return opts;
+                });
+
                 busFactoryConfigurator.Host(rabbitMqHost, hostConfigurator =>
                 {
                     hostConfigurator.Username(rabbitMqUser);
