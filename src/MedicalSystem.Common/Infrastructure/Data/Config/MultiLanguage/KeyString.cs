@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using It270.MedicalSystem.Common.Application.Core.Entities.MultiLanguage;
 
-namespace It270.MedicalSystem.Common.Infrastructure.Infrastructure.Data.Config.MultiKeyString;
+namespace It270.MedicalSystem.Common.Infrastructure.Infrastructure.Data.Config.MultiLanguage;
 
 /// <summary>
 /// Entity Framework configuration for "KeyStringConfig" entity
