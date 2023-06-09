@@ -25,10 +25,10 @@ public class StringTemplate : BaseEntity<int>, IAggregateRoot
     /// <summary>
     /// String Template Language 
     /// </summary>
-    public Language Languages { get; set; }
+    public Language Language { get; set; }
 
     /// <summary>
     /// String Template Key String
     /// </summary>
-    public KeyString KeyStrings { get; set; }
+    public KeyString KeyString { get; set; }
 }

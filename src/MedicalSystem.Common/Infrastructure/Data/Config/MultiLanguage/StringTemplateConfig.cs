@@ -27,7 +27,7 @@ public class StringTemplateConfig : IEntityTypeConfiguration<StringTemplate>
         builder.Property(e => e.Value)
             .HasColumnName("value")
             .IsRequired();
-            
+
         builder.Property(e => e.KeyStringId)
             .HasColumnName("key_string_id")
             .IsRequired();
@@ -36,13 +36,13 @@ public class StringTemplateConfig : IEntityTypeConfiguration<StringTemplate>
             .HasColumnName("language_id")
             .IsRequired();
 
-        builder.HasOne(e => e.Languages)
+        builder.HasOne(e => e.Language)
             .WithMany(p => p.StringTemplates)
             .HasForeignKey(e => e.LanguageId);
-        
-         builder.HasOne(e => e.KeyStrings)
-            .WithMany(p => p.StringTemplates)
-            .HasForeignKey(e => e.KeyStringId);
+
+        builder.HasOne(e => e.KeyString)
+           .WithMany(p => p.StringTemplates)
+           .HasForeignKey(e => e.KeyStringId);
 
     }
 }
