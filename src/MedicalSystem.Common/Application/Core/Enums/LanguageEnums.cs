@@ -18,6 +18,6 @@ public static class LanguageEnums
         /// <summary>
         /// Spanish language
         /// </summary>
-        Es = 2,
+        Es,
     }
 }

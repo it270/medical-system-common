@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using static It270.MedicalSystem.Common.Application.Core.Enums.LanguageEnums;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services;
 
@@ -13,7 +14,7 @@ public interface ILanguageService
     /// </summary>
     /// <typeparam name="KeyEnum">String key enum</typeparam>
     /// <param name="key">String key</param>
-    /// <param name="language">Language abbreviation</param>
+    /// <param name="language">Language enum value</param>
     /// <returns>Translated key</returns>
-    Task<string> GetString<KeyEnum>(KeyEnum key, string language) where KeyEnum : Enum;
+    Task<string> GetString<KeyEnum>(KeyEnum key, LanguageEnum language) where KeyEnum : Enum;
 }
