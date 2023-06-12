@@ -1,6 +1,6 @@
 using It270.MedicalSystem.Common.Application.Core.Interfaces;
 
-namespace It270.MedicalManagement.Iam.Application.Core.DTOs.UserNS;
+namespace It270.MedicalSystem.Common.Application.Core.DTOs.UserNS;
 
 /// <summary>
 /// New user request helper
