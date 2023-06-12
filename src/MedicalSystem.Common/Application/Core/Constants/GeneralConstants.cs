@@ -12,5 +12,15 @@ public static class GeneralConstants
     /// </summary>
     public const string SuperAdminUserName = "Admin";
 
+    /// <summary>
+    /// Default system language
+    /// </summary>
+    public const string DefaultLanguage = "en";
+
+    /// <summary>
+    /// Default translated string
+    /// </summary>
+    public const string DefaultString = "STRING NOT FOUND";
+
     #endregion
 }
