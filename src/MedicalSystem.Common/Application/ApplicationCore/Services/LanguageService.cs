@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Specifications;
-using It270.MedicalSystem.Common.Application.Core.Constants;
 using It270.MedicalSystem.Common.Application.Core.Entities.MultiLanguage;
 using Serilog;
+using static It270.MedicalSystem.Common.Application.Core.Enums.LanguageEnums;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 
@@ -33,26 +33,22 @@ public class LanguageService : ILanguageService
     /// </summary>
     /// <typeparam name="KeyEnum">String key enum</typeparam>
     /// <param name="key">String key</param>
-    /// <param name="language">Language abbreviation</param>
+    /// <param name="language">Language enum value</param>
     /// <returns>Translated key</returns>
-    public async Task<string> GetString<KeyEnum>(KeyEnum key, string language)
+    public async Task<string> GetString<KeyEnum>(KeyEnum key, LanguageEnum language)
     where KeyEnum : Enum
     {
-        // Validate language
-        if (string.IsNullOrEmpty(language) || language.Length != 2)
-            language = GeneralConstants.DefaultLanguage;
-
-        language = language.ToLower();
+        var languageStr = language.ToString().ToLower();
 
         // Database search 
-        var specification = new StringTemplateSpec(key.ToString(), language);
+        var specification = new StringTemplateSpec(key.ToString(), languageStr);
         var dataEntity = await _stringTemplateRepository.FirstOrDefaultAsync(specification);
 
         // Validate string result
         if (dataEntity == null)
         {
-            _logger.Error("Error: not found string '{@key}' in '{@language}' language", key, language);
-            return GeneralConstants.DefaultString;
+            _logger.Error("Error: not found string '{@key}' in '{@language}' language", key, languageStr);
+            return LanguageConstants.DefaultString;
         }
 
         return dataEntity.Value;
