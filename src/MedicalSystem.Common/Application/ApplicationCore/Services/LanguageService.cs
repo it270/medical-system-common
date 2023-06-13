@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services;
@@ -34,15 +35,16 @@ public class LanguageService : ILanguageService
     /// <typeparam name="KeyEnum">String key enum</typeparam>
     /// <param name="key">String key</param>
     /// <param name="language">Language enum value</param>
+    /// <param name="ct">Cancellation token</param>
     /// <returns>Translated key</returns>
-    public async Task<string> GetString<KeyEnum>(KeyEnum key, LanguageEnum language)
+    public async Task<string> GetString<KeyEnum>(KeyEnum key, LanguageEnum language, CancellationToken ct = default)
     where KeyEnum : Enum
     {
         var languageStr = language.ToString().ToLower();
 
         // Database search 
         var specification = new StringTemplateSpec(key.ToString(), languageStr);
-        var dataEntity = await _stringTemplateRepository.FirstOrDefaultAsync(specification);
+        var dataEntity = await _stringTemplateRepository.FirstOrDefaultAsync(specification, ct);
 
         // Validate string result
         if (dataEntity == null)

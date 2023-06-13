@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using static It270.MedicalSystem.Common.Application.Core.Enums.LanguageEnums;
 
@@ -15,6 +16,8 @@ public interface ILanguageService
     /// <typeparam name="KeyEnum">String key enum</typeparam>
     /// <param name="key">String key</param>
     /// <param name="language">Language enum value</param>
+    /// <param name="ct">Cancellation token</param>
     /// <returns>Translated key</returns>
-    Task<string> GetString<KeyEnum>(KeyEnum key, LanguageEnum language) where KeyEnum : Enum;
+    Task<string> GetString<KeyEnum>(KeyEnum key, LanguageEnum language, CancellationToken ct = default)
+    where KeyEnum : Enum;
 }
