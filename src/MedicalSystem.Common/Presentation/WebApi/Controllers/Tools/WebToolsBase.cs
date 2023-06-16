@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
 using It270.MedicalSystem.Common.Presentation.WebApi.Interfaces;
-using System.Net;
 
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Controllers.Tools;
 
