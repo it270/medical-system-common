@@ -9,6 +9,7 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Runtime;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.ExternalServices;
+using It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 using It270.MedicalSystem.Common.Application.Core.Constants;
 using It270.MedicalSystem.Common.Application.Core.Helpers.UserNS;
 using Serilog;
@@ -363,13 +364,17 @@ public class IamService : IIamService
 
         try
         {
-            var request = new AdminResetUserPasswordRequest()
+            string key = CryptoTools.PasswordGenerator();
+
+            var request = new AdminSetUserPasswordRequest()
             {
                 Username = userName,
                 UserPoolId = _userPoolId,
+                Password = key,
+                Permanent = false,
             };
 
-            var response = await _client.AdminResetUserPasswordAsync(request, ct);
+            var response = await _client.AdminSetUserPasswordAsync(request, ct);
 
             successResult = response.HttpStatusCode == HttpStatusCode.OK;
 
