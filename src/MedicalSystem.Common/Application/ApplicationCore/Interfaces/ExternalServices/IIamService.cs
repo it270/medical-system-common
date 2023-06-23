@@ -73,9 +73,10 @@ public interface IIamService
     /// Reset user password
     /// </summary>
     /// <param name="userName">User name</param>
+    /// <param name="key">User password</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>Process result</returns>
-    Task<bool> ResetUserPassword(string userName, CancellationToken ct = default);
+    Task<bool> ResetUserPassword(string userName, string key, CancellationToken ct = default);
 
     /// <summary>
     /// Disable/Enable user

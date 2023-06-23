@@ -355,21 +355,24 @@ public class IamService : IIamService
     /// Reset user password
     /// </summary>
     /// <param name="userName">User name</param>
+    /// <param name="key">Provisional user password</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>Process result</returns>
-    public async Task<bool> ResetUserPassword(string userName, CancellationToken ct = default)
+    public async Task<bool> ResetUserPassword(string userName, string key, CancellationToken ct = default)
     {
         bool successResult = false;
 
         try
         {
-            var request = new AdminResetUserPasswordRequest()
+            var request = new AdminSetUserPasswordRequest()
             {
                 Username = userName,
                 UserPoolId = _userPoolId,
+                Password = key,
+                Permanent = false,
             };
 
-            var response = await _client.AdminResetUserPasswordAsync(request, ct);
+            var response = await _client.AdminSetUserPasswordAsync(request, ct);
 
             successResult = response.HttpStatusCode == HttpStatusCode.OK;
 
