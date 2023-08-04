@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
+using It270.MedicalSystem.Common.Application.Core.Helpers.Storage;
 using Microsoft.AspNetCore.Http;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General;
@@ -23,7 +24,7 @@ public interface IServiceStorage<ET>
     /// <param name="id">Entity identifier</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>Process result</returns>
-    Task<CustomWebResponse> GetFile(ET id, CancellationToken ct = default);
+    Task<FileData> GetFile(ET id, CancellationToken ct = default);
 
     /// <summary>
     /// Upload entity file
