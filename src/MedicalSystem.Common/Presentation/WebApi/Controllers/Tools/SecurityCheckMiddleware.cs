@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
@@ -18,17 +19,18 @@ public class SecurityCheckMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly string _moduleName;
+    private readonly string _securityEndpoint;
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public SecurityCheckMiddleware(RequestDelegate next,
-        IConfiguration configuration)
+    public SecurityCheckMiddleware(IConfiguration configuration,
+        RequestDelegate next)
     {
-        _next = next;
-
+        _securityEndpoint = Environment.GetEnvironmentVariable("SYSTEM_IAM_HOST");
         var settings = configuration.Get<CustomConfig>();
         _moduleName = settings?.Project?.ModuleName ?? LogConstants.EmptyModuleName;
+        _next = next;
     }
 
     /// <summary>
@@ -43,9 +45,10 @@ public class SecurityCheckMiddleware
         var requestType = context.GetMethod();
         var requestTypeEnum = requestType.CastToEnum<RequestType>();
 
-        using var channel = GrpcChannel.ForAddress("http://localhost:5008");
+        using var channel = GrpcChannel.ForAddress(_securityEndpoint);
         var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
 
+        // Validate response with security microservice
         var reply = await client.CheckPermissionAsync(
             new()
             {
