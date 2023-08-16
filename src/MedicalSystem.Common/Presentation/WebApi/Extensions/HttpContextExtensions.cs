@@ -13,6 +13,39 @@ namespace It270.MedicalSystem.Common.Presentation.WebApi.Extensions;
 public static class HttpContextExtensions
 {
     /// <summary>
+    /// Get controller name
+    /// </summary>
+    /// <param name="httpContext">Current HTTP Context</param>
+    /// <returns>Controller name</returns>
+    public static string GetControllerName(this HttpContext httpContext)
+    {
+        var controllerName = httpContext.Request.RouteValues["controller"].ToString();
+        return controllerName;
+    }
+
+    /// <summary>
+    /// Get action name
+    /// </summary>
+    /// <param name="httpContext">Current HTTP Context</param>
+    /// <returns>Controller action name</returns>
+    public static string GetActionName(this HttpContext httpContext)
+    {
+        var actionName = httpContext.Request.RouteValues["action"].ToString();
+        return actionName;
+    }
+
+    /// <summary>
+    /// Get request method
+    /// </summary>
+    /// <param name="httpContext">Current HTTP Context</param>
+    /// <returns>Method name</returns>
+    public static string GetMethod(this HttpContext httpContext)
+    {
+        var actionName = httpContext.Request.Method;
+        return actionName;
+    }
+
+    /// <summary>
     /// Get claims from access token
     /// </summary>
     /// <param name="token">Access token string</param>
