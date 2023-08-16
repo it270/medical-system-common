@@ -20,4 +20,9 @@ public class ProjectData
     /// Project name
     /// </summary>
     public string Name { get; set; }
+
+    /// <summary>
+    /// Friendly module name
+    /// </summary>
+    public string ModuleName { get; set; }
 }

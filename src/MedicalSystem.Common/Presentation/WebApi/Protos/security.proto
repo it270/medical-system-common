@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "It270.MedicalSystem.Common.Presentation.WebApi.Protos";
+
+package security;
+
+service SecurityServiceGrpc {
+    rpc CheckPermission (CheckPermissionRequest) returns (CheckPermissionReply);
+}
+
+enum RequestType {
+    GET = 0;
+    POST = 1;
+    PUT = 2;
+    DELETE = 3;
+}
+
+message CheckPermissionRequest {
+  string userName = 1;
+  string module = 2;
+  string controller = 3;
+  string action = 4;
+  RequestType requestType = 5;
+}
+
+message CheckPermissionReply {
+  bool response = 1;
+}

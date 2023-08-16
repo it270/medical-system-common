@@ -13,6 +13,11 @@ public class LogConstants
     public const string EmptyProjectName = "EmptyProjectName";
 
     /// <summary>
+    /// Default module name
+    /// </summary>
+    public const string EmptyModuleName = "EmptyModuleName";
+
+    /// <summary>
     /// Default storage database name
     /// </summary>
     public const string DefaultDbName = "logs";
