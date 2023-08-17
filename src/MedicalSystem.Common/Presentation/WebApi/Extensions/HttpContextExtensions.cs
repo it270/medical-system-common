@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -19,7 +20,14 @@ public static class HttpContextExtensions
     /// <returns>Controller name</returns>
     public static string GetControllerName(this HttpContext httpContext)
     {
-        var controllerName = httpContext.Request.RouteValues["controller"].ToString();
+        string controllerName = null;
+
+        try
+        {
+            controllerName = httpContext.Request.RouteValues["controller"].ToString();
+        }
+        catch (Exception) { }
+
         return controllerName;
     }
 
@@ -30,7 +38,14 @@ public static class HttpContextExtensions
     /// <returns>Controller action name</returns>
     public static string GetActionName(this HttpContext httpContext)
     {
-        var actionName = httpContext.Request.RouteValues["action"].ToString();
+        string actionName = null;
+
+        try
+        {
+            actionName = httpContext.Request.RouteValues["action"].ToString();
+        }
+        catch (Exception) { }
+
         return actionName;
     }
 
