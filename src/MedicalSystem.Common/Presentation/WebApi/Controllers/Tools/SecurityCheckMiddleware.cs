@@ -39,6 +39,13 @@ public class SecurityCheckMiddleware
     /// <param name="context">HTTP context</param>
     public async Task InvokeAsync(HttpContext context)
     {
+        // Patch for discard grpc services
+        if (context?.Request?.ContentType == "application/grpc")
+        {
+            await _next(context);
+            return;
+        }
+
         var username = context.GetUserName();
         var controllerName = context.GetControllerName();
         var actionName = context.GetActionName();
