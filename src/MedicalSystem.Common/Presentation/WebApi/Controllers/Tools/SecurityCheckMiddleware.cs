@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
@@ -41,6 +42,14 @@ public class SecurityCheckMiddleware
     {
         // Patch for discard grpc services
         if (context?.Request?.ContentType == "application/grpc")
+        {
+            await _next(context);
+            return;
+        }
+
+        // Patch for discard health services
+        var relativePath = context?.Request?.Path.ToUriComponent();
+        if (relativePath == "/health")
         {
             await _next(context);
             return;
