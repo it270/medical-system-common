@@ -55,16 +55,25 @@ public class SecurityCheckMiddleware
             return;
         }
 
+        // Discard HTTP request methods
+        var requestType = context.GetMethod();
+        var requestTypeEnum = requestType.CastToEnum<RequestType>();
+        var ignoredMethods = new RequestType[] { RequestType.Head, RequestType.Options };
+
+        if (ignoredMethods.Contains(requestTypeEnum))
+        {
+            await _next(context);
+            return;
+        }
+
+        // Validate response with security microservice
         var username = context.GetUserName();
         var controllerName = context.GetControllerName();
         var actionName = context.GetActionName();
-        var requestType = context.GetMethod();
-        var requestTypeEnum = requestType.CastToEnum<RequestType>();
 
         using var channel = GrpcChannel.ForAddress(_securityEndpoint);
         var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
 
-        // Validate response with security microservice
         var reply = await client.CheckPermissionAsync(
             new()
             {
