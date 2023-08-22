@@ -47,9 +47,13 @@ public class SecurityCheckMiddleware
             return;
         }
 
-        // Patch for discard health services
+        // Patch for discard anonymous services
         var relativePath = context?.Request?.Path.ToUriComponent();
-        if (relativePath == "/health")
+        var ignoredPaths = new string[] {
+            "/",        // Default service (swagger)
+            "/health"   // Health checks
+        };
+        if (ignoredPaths.Contains(relativePath))
         {
             await _next(context);
             return;
