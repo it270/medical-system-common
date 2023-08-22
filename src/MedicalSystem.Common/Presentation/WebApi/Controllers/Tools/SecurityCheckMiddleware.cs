@@ -40,20 +40,38 @@ public class SecurityCheckMiddleware
     /// <param name="context">HTTP context</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        // Patch for discard grpc services
+        // Discard grpc services
         if (context?.Request?.ContentType == "application/grpc")
         {
             await _next(context);
             return;
         }
 
-        // Patch for discard anonymous services
+        // Discard anonymous services and static files
         var relativePath = context?.Request?.Path.ToUriComponent();
         var ignoredPaths = new string[] {
-            "/",        // Default service (swagger)
-            "/health"   // Health checks
+            "/",                // Default service (swagger)
+            "/health",          // Health checks
+            "/favicon.ico",     // Favorites icon
         };
+
         if (ignoredPaths.Contains(relativePath))
+        {
+            await _next(context);
+            return;
+        }
+
+        // Discard static files and custom services
+        var ignoredFilePaths = new string[] {
+            "/Email/",           // Email MVC templates
+            "/img/",             // static images
+        };
+
+        var hasFilePath = ignoredFilePaths
+            .Where(p => relativePath.Contains(p))
+            .Any();
+
+        if (hasFilePath)
         {
             await _next(context);
             return;
@@ -71,9 +89,9 @@ public class SecurityCheckMiddleware
         }
 
         // Validate response with security microservice
-        var username = context.GetUserName();
         var controllerName = context.GetControllerName();
         var actionName = context.GetActionName();
+        var username = context.GetUserName();
 
         using var channel = GrpcChannel.ForAddress(_securityEndpoint);
         var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
