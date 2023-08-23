@@ -140,10 +140,22 @@ public class SecurityCheckMiddleware
             HttpClient = new HttpClient(handler),
         });
         var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
+        CheckPermissionReply reply = null;
+        var response = false;
 
-        var reply = await client.CheckPermissionAsync(requestData);
-
-        var response = reply.Response;
+        try
+        {
+            reply = await client.CheckPermissionAsync(requestData);
+            response = reply.Response;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GRPC: Invalid action values: {@debugData}", new
+            {
+                Path = relativePath,
+                RequestData = requestData,
+            });
+        }
 
         if (!response)
         {
