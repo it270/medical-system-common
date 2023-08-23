@@ -42,6 +42,19 @@ public class SecurityCheckMiddleware
     /// <param name="context">HTTP context</param>
     public async Task InvokeAsync(HttpContext context)
     {
+        // Discard grpc services
+        var grpcContentTypes = new string[]
+        {
+            "application/grpc",
+            "application/grpc-web",
+            "application/grpc-web-text",
+        };
+        if (grpcContentTypes.Contains(context?.Request?.ContentType))
+        {
+            await _next(context);
+            return;
+        }
+
         // Discard anonymous services and static files
         var relativePath = context?.Request?.Path.ToUriComponent();
         var ignoredPaths = new string[]
