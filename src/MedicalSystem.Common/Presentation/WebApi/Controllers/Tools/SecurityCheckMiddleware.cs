@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
 using It270.MedicalSystem.Common.Application.Core.Constants;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
@@ -41,7 +43,13 @@ public class SecurityCheckMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         // Discard grpc services
-        if (context?.Request?.ContentType == "application/grpc")
+        var grpcContenctTypes = new string[]
+        {
+            "application/grpc",
+            "application/grpc-web",
+            "application/grpc-web-text",
+        };
+        if (grpcContenctTypes.Contains(context?.Request?.ContentType))
         {
             await _next(context);
             return;
@@ -49,7 +57,8 @@ public class SecurityCheckMiddleware
 
         // Discard anonymous services and static files
         var relativePath = context?.Request?.Path.ToUriComponent();
-        var ignoredPaths = new string[] {
+        var ignoredPaths = new string[]
+        {
             "/",                // Default service (swagger)
             "/health",          // Health checks
             "/favicon.ico",     // Favorites icon
@@ -62,7 +71,8 @@ public class SecurityCheckMiddleware
         }
 
         // Discard static files and custom services
-        var ignoredFilePaths = new string[] {
+        var ignoredFilePaths = new string[]
+        {
             "/Email/",           // Email MVC templates
             "/img/",             // static images
         };
@@ -93,7 +103,11 @@ public class SecurityCheckMiddleware
         var actionName = context.GetActionName();
         var username = context.GetUserName();
 
-        using var channel = GrpcChannel.ForAddress(_securityEndpoint);
+        var handler = new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler());
+        using var channel = GrpcChannel.ForAddress(_securityEndpoint, new()
+        {
+            HttpClient = new HttpClient(handler),
+        });
         var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
 
         var reply = await client.CheckPermissionAsync(
