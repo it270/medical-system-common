@@ -12,6 +12,7 @@ using It270.MedicalSystem.Common.Presentation.WebApi.Extensions;
 using It270.MedicalSystem.Common.Presentation.WebApi.Protos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Controllers.Tools;
 
@@ -23,17 +24,20 @@ public class SecurityCheckMiddleware
     private readonly RequestDelegate _next;
     private readonly string _moduleName;
     private readonly string _securityEndpoint;
+    private readonly ILogger _logger;
 
     /// <summary>
     /// Default constructor
     /// </summary>
     public SecurityCheckMiddleware(IConfiguration configuration,
-        RequestDelegate next)
+        RequestDelegate next,
+        ILogger logger)
     {
         _securityEndpoint = Environment.GetEnvironmentVariable("SYSTEM_IAM_HOST");
         var settings = configuration.Get<CustomConfig>();
         _moduleName = settings?.Project?.ModuleName ?? LogConstants.EmptyModuleName;
         _next = next;
+        _logger = logger;
     }
 
     /// <summary>
@@ -94,6 +98,7 @@ public class SecurityCheckMiddleware
 
         if (ignoredMethods.Contains(requestTypeEnum))
         {
+            _logger.Error("GRPC: Invalid request type: {@requestType}", requestType);
             await _next(context);
             return;
         }
@@ -103,10 +108,32 @@ public class SecurityCheckMiddleware
         var actionName = context.GetActionName();
         var username = context.GetUserName();
 
+        // Proto request data
+        var requestData = new CheckPermissionRequest()
+        {
+            UserName = username ?? string.Empty,
+            Module = _moduleName,
+            Controller = controllerName ?? string.Empty,
+            Action = actionName ?? string.Empty,
+            RequestType = requestTypeEnum,
+        };
+
+        if (controllerName == null || actionName == null)
+        {
+            _logger.Error("GRPC: Invalid action values: {@debugData}", new
+            {
+                Path = relativePath,
+                RequestData = requestData,
+            });
+
+            await _next(context);
+            return;
+        }
+
         // Configure gRPC web mode
         var handler = new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler())
         {
-            HttpVersion = HttpVersion.Version11
+            HttpVersion = HttpVersion.Version11,
         };
         using var channel = GrpcChannel.ForAddress(_securityEndpoint, new()
         {
@@ -114,15 +141,7 @@ public class SecurityCheckMiddleware
         });
         var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
 
-        var reply = await client.CheckPermissionAsync(
-            new()
-            {
-                UserName = username,
-                Module = _moduleName,
-                Controller = controllerName,
-                Action = actionName,
-                RequestType = requestTypeEnum,
-            });
+        var reply = await client.CheckPermissionAsync(requestData);
 
         var response = reply.Response;
 
