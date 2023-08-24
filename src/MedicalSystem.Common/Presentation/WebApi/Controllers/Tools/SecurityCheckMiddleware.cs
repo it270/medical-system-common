@@ -99,6 +99,8 @@ public class SecurityCheckMiddleware
         if (ignoredMethods.Contains(requestTypeEnum))
         {
             _logger.Error("GRPC: Invalid request type: {@requestType}", requestType);
+
+            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             await _next(context);
             return;
         }
@@ -150,7 +152,7 @@ public class SecurityCheckMiddleware
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "GRPC: Invalid action values: {@debugData}", new
+            _logger.Error(ex, "GRPC: Exception. Request data: {@debugData}", new
             {
                 Path = relativePath,
                 RequestData = requestData,
