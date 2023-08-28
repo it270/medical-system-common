@@ -27,7 +27,7 @@ public static class ConfigOpenApi
             Name = "Authorization",
             Type = SecuritySchemeType.Http,
             BearerFormat = "JWT",
-            Scheme = "Bearer"
+            Scheme = "bearer"
         });
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
