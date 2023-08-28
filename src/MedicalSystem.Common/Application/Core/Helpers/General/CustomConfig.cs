@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace It270.MedicalSystem.Common.Application.Core.Helpers.General;
 
 /// <summary>
@@ -25,4 +27,25 @@ public class ProjectData
     /// Friendly module name
     /// </summary>
     public string ModuleName { get; set; }
+
+    /// <summary>
+    /// OpenAPI Servers
+    /// </summary>
+    public List<ServerData> Servers { get; set; }
+}
+
+/// <summary>
+/// OpenAPI server data
+/// </summary>
+public class ServerData
+{
+    /// <summary>
+    /// Server Url
+    /// </summary>
+    public string Url { get; set; }
+
+    /// <summary>
+    /// Server description
+    /// </summary>
+    public string Description { get; set; }
 }
