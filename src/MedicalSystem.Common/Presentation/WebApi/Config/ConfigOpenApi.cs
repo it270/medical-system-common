@@ -47,10 +47,9 @@ public static class ConfigOpenApi
             {
                 Log.Error("XML comments for Swagger disabled");
             }
-
         });
 
-        // Enable automatic examples search in the project
+        // Enable automatic examples search in project
         services.AddSwaggerExamples();
 
         return services;
@@ -80,7 +79,9 @@ public static class ConfigOpenApi
     /// <param name="options">Swagger options</param>
     private static void ConfigDefaultSecurity(this SwaggerGenOptions options)
     {
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        const string securityDefinitionName = "Bearer";
+
+        options.AddSecurityDefinition(securityDefinitionName, new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
             Description = "Please enter a valid token",
@@ -89,6 +90,7 @@ public static class ConfigOpenApi
             BearerFormat = "JWT",
             Scheme = "bearer"
         });
+
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
@@ -97,7 +99,7 @@ public static class ConfigOpenApi
                     Reference = new OpenApiReference
                     {
                         Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
+                        Id = securityDefinitionName
                     }
                 },
                 new string[]{}
