@@ -22,11 +22,13 @@ public static class ConfigOpenApi
     /// <summary>
     /// Custom Swagger generator setup
     /// </summary>
+    /// <typeparam name="T">Program.cs</typeparam>
     /// <param name="services">Service descriptors collection</param>
     /// <param name="enableSecurity">Enable security setup</param>
     /// <returns>Service descriptors collection with custom configuration</returns>
-    public static IServiceCollection AddSwaggerGenCustom(this IServiceCollection services,
+    public static IServiceCollection AddSwaggerGenCustom<T>(this IServiceCollection services,
         bool enableSecurity = true)
+        where T : class
     {
         services.AddSwaggerGen(options =>
         {
@@ -37,20 +39,12 @@ public static class ConfigOpenApi
             // Enable Swagger filters
             options.ExampleFilters();
 
-            try
-            {
-                // Add XML comments
-                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            }
-            catch (Exception)
-            {
-                Log.Error("XML comments for Swagger disabled");
-            }
+            // Add XML comments
+            ReadXmlDocs(options);
         });
 
         // Enable automatic examples search in project
-        services.AddSwaggerExamples();
+        services.AddSwaggerExamplesFromAssemblyOf<T>();
 
         return services;
     }
@@ -62,15 +56,36 @@ public static class ConfigOpenApi
     /// <returns>WebApplication instance with custom configuration</returns>
     public static WebApplication UseSwaggerCustom(this WebApplication app)
     {
-        app.UseSwagger(c =>
+        app.UseSwagger(options =>
         {
-            c.PreSerializeFilters.Add((swagger, httpReq) =>
+            options.PreSerializeFilters.Add((swagger, httpReq) =>
             {
                 AddHosts(swagger, httpReq, app);
             });
         });
 
         return app;
+    }
+
+    /// <summary>
+    /// Read XML docs in child projects
+    /// </summary>
+    /// <param name="options">Swagger generation options</param>
+    private static void ReadXmlDocs(SwaggerGenOptions options)
+    {
+        var xmlFiles = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), "*.xml");
+
+        foreach (var xmlFilePath in xmlFiles)
+        {
+            try
+            {
+                options.IncludeXmlComments(xmlFilePath);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "XML comments for Swagger disabled {xmlFilePath}", xmlFilePath);
+            }
+        }
     }
 
     /// <summary>
