@@ -83,7 +83,7 @@ public static class ConfigOpenApi
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "XML comments for Swagger disabled {xmlFilePath}", xmlFilePath);
+                Log.Error(ex, "XML comments for Swagger disabled {@xmlFilePath}", xmlFilePath);
             }
         }
     }
