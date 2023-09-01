@@ -65,7 +65,7 @@ public static class HttpContextExtensions
     /// </summary>
     /// <param name="token">Access token string</param>
     /// <returns>Claims list</returns>
-    private static IEnumerable<Claim> GetTokenClaims(string token)
+    public static IEnumerable<Claim> GetTokenClaims(string token)
     {
         var securityTokenHandler = new JwtSecurityTokenHandler();
 
