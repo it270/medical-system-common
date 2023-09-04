@@ -6,9 +6,9 @@ namespace It270.MedicalSystem.Common.Application.Core.Enums;
 public class DocumentEnums
 {
     /// <summary>
-    /// Document type enum (patients)
+    /// Document type enum
     /// </summary>
-    public enum PatientsDocumentTypeEnum : int
+    public enum DocumentTypeEnum : int
     {
         /// <summary>
         /// Número de identificación tributaria
