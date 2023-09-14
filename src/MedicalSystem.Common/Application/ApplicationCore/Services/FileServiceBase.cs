@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
@@ -110,5 +112,23 @@ public abstract class FileServiceBase : IFileServiceBase
                 StatusCode = HttpStatusCode.InternalServerError,
                 Message = "Delete file error",
             };
+    }
+
+    /// <summary>
+    /// Get file content as string
+    /// </summary>
+    /// <param name="file">File data</param>
+    /// <returns>File content as string</returns>
+    public string GetString(IFormFile file)
+    {
+        var result = new StringBuilder();
+
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            while (reader.Peek() >= 0)
+                result.AppendLine(reader.ReadLine());
+        }
+
+        return result.ToString();
     }
 }

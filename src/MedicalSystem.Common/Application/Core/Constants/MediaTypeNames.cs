@@ -58,6 +58,16 @@ public static class MediaTypeNames
     /// </summary>
     public static class Document
     {
+        /// <summary>
+        /// HTML document
+        /// </summary>
+        public const string Html = "text/html";
+
+        /// <summary>
+        /// XHTML document
+        /// </summary>
+        public const string Xhtml = "application/xhtml+xml";
+
         /// <summary>PDF document</summary>
         public const string Pdf = "application/pdf";
 
