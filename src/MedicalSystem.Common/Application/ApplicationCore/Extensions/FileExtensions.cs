@@ -41,6 +41,20 @@ public static class FileExtensions
     }
 
     /// <summary>
+    /// Check if is a valid html
+    /// </summary>
+    /// <param name="file">Input file</param>
+    /// <returns>True if is valid. False otherwise</returns>
+    public static bool IsValidHtml(this IFormFile file)
+    {
+        var validImageMimeTypes = new string[] {
+            MediaTypeNames.Document.Html,
+            MediaTypeNames.Document.Xhtml,
+        };
+        return validImageMimeTypes.Contains(file?.ContentType);
+    }
+
+    /// <summary>
     /// Check if is a valid archive file
     /// </summary>
     /// <param name="file">Input file</param>
