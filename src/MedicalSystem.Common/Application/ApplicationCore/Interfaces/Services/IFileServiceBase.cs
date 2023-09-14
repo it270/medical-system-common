@@ -36,4 +36,11 @@ public interface IFileServiceBase
     /// <param name="ct">Cancellation token</param>
     /// <returns>Process result</returns>
     Task<CustomWebResponse> Delete(string name, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get file content as string
+    /// </summary>
+    /// <param name="file">File data</param>
+    /// <returns>File content as string</returns>
+    string GetString(IFormFile file);
 }
