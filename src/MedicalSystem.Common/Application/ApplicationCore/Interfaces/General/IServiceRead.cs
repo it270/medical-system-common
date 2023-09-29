@@ -15,6 +15,14 @@ public interface IServiceRead<DTO, ET>
     where ET : notnull
 {
     /// <summary>
+    /// Check if element exists
+    /// </summary>
+    /// <param name="id">Element identifier</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    Task<bool> Exists(ET id, CancellationToken ct = default);
+
+    /// <summary>
     /// Get element
     /// </summary>
     /// <param name="id">Element identifier</param>
