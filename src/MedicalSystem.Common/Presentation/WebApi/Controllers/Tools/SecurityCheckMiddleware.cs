@@ -27,53 +27,10 @@ public class SecurityCheckMiddleware
     private readonly string _moduleName;
     private readonly ILogger _logger;
 
-    #region Constants
-
     /// <summary>
     /// Security endpoint (IAM microservice)
     /// </summary>
-    private static readonly string SecurityEndpoint = string.Concat(Environment.GetEnvironmentVariable("SYSTEM_SECURITY_CHECK_URL"), "/Security/CheckPermission");
-
-    /// <summary>
-    /// Default JSON deserializer options
-    /// </summary>
-    private static readonly JsonSerializerOptions JsonDeserializerOpts = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    /// <summary>
-    /// Ignored HTML url paths
-    /// </summary>
-    private static readonly string[] IgnoredPaths = new string[]
-    {
-        // Default service (swagger)
-        "/",
-        // Health checks
-        "/health",
-        // Security services
-        "/Security/",
-        // General public services
-        "/Public/",
-        // Document manager MVC templates        
-        "/Template/Default/",
-        // Static web files
-        "/favicon.ico",
-        "/img/",
-        "/css/",
-        "/js/",
-    };
-
-    /// <summary>
-    /// Ignored HTTP methods
-    /// </summary>
-    private static readonly RequestTypeEnum[] IgnoredHttpMethods = new RequestTypeEnum[]
-    {
-        RequestTypeEnum.Head,
-        RequestTypeEnum.Options
-    };
-
-    #endregion
+    private static readonly string SecurityEndpoint = string.Concat(Environment.GetEnvironmentVariable("SYSTEM_SECURITY_CHECK_URL"), SecurityConstants.CheckPermissionUrl);
 
     /// <summary>
     /// Default constructor
@@ -97,7 +54,7 @@ public class SecurityCheckMiddleware
         var relativePath = context?.Request?.Path.ToUriComponent();
 
         // Discard static files and custom services
-        var hasFilePath = IgnoredPaths
+        var hasFilePath = SecurityConstants.IgnoredPaths
             .Where(p => relativePath.Contains(p))
             .Any();
 
@@ -111,7 +68,7 @@ public class SecurityCheckMiddleware
         var requestType = context.GetMethod();
         var requestTypeEnum = requestType.CastToEnum<RequestTypeEnum>();
 
-        if (IgnoredHttpMethods.Contains(requestTypeEnum))
+        if (SecurityConstants.IgnoredHttpMethods.Contains(requestTypeEnum))
         {
             await _next(context);
             return;
@@ -140,7 +97,7 @@ public class SecurityCheckMiddleware
                 RequestData = requestData,
             });
 
-            await _next(context);
+            await MakeForbiddenResponse(context);
             return;
         }
 
@@ -152,8 +109,17 @@ public class SecurityCheckMiddleware
             var requestDataJson = JsonSerializer.Serialize(requestData);
             var content = new StringContent(requestDataJson, Encoding.UTF8, Data.Json);
             var httpResponse = await client.PostAsync(SecurityEndpoint, content);
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                _logger.Error("Security middleware: Response error: {@httpResponse}", httpResponse);
+
+                await MakeForbiddenResponse(context);
+                return;
+            }
+
             var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
-            response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, JsonDeserializerOpts);
+            response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, SecurityConstants.JsonDeserializerOpts);
         }
         catch (Exception ex)
         {
@@ -166,11 +132,20 @@ public class SecurityCheckMiddleware
 
         if (!(response?.Authorized ?? false))
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            await context.Response.CompleteAsync();
+            await MakeForbiddenResponse(context);
             return;
         }
 
         await _next(context);
+    }
+
+    /// <summary>
+    /// Make http forbidden response
+    /// </summary>
+    /// <param name="context">Http response</param>
+    private async Task MakeForbiddenResponse(HttpContext context)
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        await context.Response.CompleteAsync();
     }
 }
