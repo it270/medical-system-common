@@ -53,6 +53,18 @@ public abstract class ServiceRead<E, DTO, ET, GS> : IServiceRead<DTO, ET>
     }
 
     /// <summary>
+    /// Check if element exists
+    /// </summary>
+    /// <param name="id">Element identifier</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    public virtual async Task<bool> Exists(ET id, CancellationToken ct = default)
+    {
+        var specification = (GS)Activator.CreateInstance(typeof(GS), new object[] { id });
+        return await _entityRepository.AnyAsync(specification, ct);
+    }
+
+    /// <summary>
     /// Get element
     /// </summary>
     /// <param name="id">Element identifier</param>
