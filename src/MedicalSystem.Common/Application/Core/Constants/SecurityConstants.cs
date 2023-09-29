@@ -30,8 +30,10 @@ public static class SecurityConstants
     {
             // Swagger
             "/swagger",
-            // Health checks
+            // Health check
             "/health",
+            // Internal services
+            "/Internal/",
             // Security services
             "/Security/",
             // General public services
