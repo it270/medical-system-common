@@ -2,17 +2,19 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Grpc.Net.Client;
-using Grpc.Net.Client.Web;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Extensions;
 using It270.MedicalSystem.Common.Application.Core.Constants;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
+using It270.MedicalSystem.Common.Application.Core.Helpers.Security;
 using It270.MedicalSystem.Common.Presentation.WebApi.Extensions;
-using It270.MedicalSystem.Common.Presentation.WebApi.Protos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using static It270.MedicalSystem.Common.Application.Core.Constants.MediaTypeNames;
+using static It270.MedicalSystem.Common.Application.Core.Enums.Security.RequestEnums;
 
 namespace It270.MedicalSystem.Common.Presentation.WebApi.Controllers.Tools;
 
@@ -23,8 +25,12 @@ public class SecurityCheckMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly string _moduleName;
-    private readonly string _securityEndpoint;
     private readonly ILogger _logger;
+
+    /// <summary>
+    /// Security endpoint (IAM microservice)
+    /// </summary>
+    private static readonly string SecurityEndpoint = string.Concat(Environment.GetEnvironmentVariable("SYSTEM_SECURITY_CHECK_URL"), SecurityConstants.CheckPermissionUrl);
 
     /// <summary>
     /// Default constructor
@@ -33,7 +39,6 @@ public class SecurityCheckMiddleware
         RequestDelegate next,
         ILogger logger)
     {
-        _securityEndpoint = Environment.GetEnvironmentVariable("SYSTEM_IAM_HOST");
         var settings = configuration.Get<CustomConfig>();
         _moduleName = settings?.Project?.ModuleName ?? LogConstants.EmptyModuleName;
         _next = next;
@@ -46,42 +51,10 @@ public class SecurityCheckMiddleware
     /// <param name="context">HTTP context</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        // Discard grpc services
-        var grpcContentTypes = new string[]
-        {
-            "application/grpc",
-            "application/grpc-web",
-            "application/grpc-web-text",
-        };
-        if (grpcContentTypes.Contains(context?.Request?.ContentType))
-        {
-            await _next(context);
-            return;
-        }
-
-        // Discard anonymous services and static files
         var relativePath = context?.Request?.Path.ToUriComponent();
-        var ignoredPaths = new string[]
-        {
-            "/",                // Default service (swagger)
-            "/health",          // Health checks
-            "/favicon.ico",     // Favorites icon
-        };
-
-        if (ignoredPaths.Contains(relativePath))
-        {
-            await _next(context);
-            return;
-        }
 
         // Discard static files and custom services
-        var ignoredFilePaths = new string[]
-        {
-            "/Email/",           // Email MVC templates
-            "/img/",             // static images
-        };
-
-        var hasFilePath = ignoredFilePaths
+        var hasFilePath = SecurityConstants.IgnoredPaths
             .Where(p => relativePath.Contains(p))
             .Any();
 
@@ -93,14 +66,10 @@ public class SecurityCheckMiddleware
 
         // Discard HTTP request methods
         var requestType = context.GetMethod();
-        var requestTypeEnum = requestType.CastToEnum<RequestType>();
-        var ignoredMethods = new RequestType[] { RequestType.Head, RequestType.Options };
+        var requestTypeEnum = requestType.CastToEnum<RequestTypeEnum>();
 
-        if (ignoredMethods.Contains(requestTypeEnum))
+        if (SecurityConstants.IgnoredHttpMethods.Contains(requestTypeEnum))
         {
-            _logger.Error("GRPC: Invalid request type: {@requestType}", requestType);
-
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             await _next(context);
             return;
         }
@@ -110,63 +79,78 @@ public class SecurityCheckMiddleware
         var actionName = context.GetActionName();
         var username = context.GetUserName();
 
-        // Proto request data
+        // Build request data
         var requestData = new CheckPermissionRequest()
         {
-            UserName = username ?? string.Empty,
+            UserName = username,
             Module = _moduleName,
-            Controller = controllerName ?? string.Empty,
-            Action = actionName ?? string.Empty,
+            Controller = controllerName,
+            Action = actionName,
             RequestType = requestTypeEnum,
         };
 
         if (controllerName == null || actionName == null)
         {
-            _logger.Error("GRPC: Invalid action values: {@debugData}", new
+            _logger.Error("Security middleware: Invalid action values: {@debugData}", new
             {
                 Path = relativePath,
                 RequestData = requestData,
             });
 
-            await _next(context);
+            await MakeForbiddenResponse(context);
             return;
         }
 
-        // Configure gRPC web mode
-        var handler = new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler())
-        {
-            HttpVersion = HttpVersion.Version11,
-        };
-        using var channel = GrpcChannel.ForAddress(_securityEndpoint, new()
-        {
-            HttpClient = new HttpClient(handler),
-        });
-        var client = new SecurityServiceGrpc.SecurityServiceGrpcClient(channel);
-        CheckPermissionReply reply = null;
-        var response = false;
-
+        // Validate current request permissions
+        CheckPermissionResponse response = null;
         try
         {
-            reply = await client.CheckPermissionAsync(requestData);
-            response = reply.Response;
+            var client = new HttpClient();
+            var requestDataJson = JsonSerializer.Serialize(requestData);
+            var content = new StringContent(requestDataJson, Encoding.UTF8, Data.Json);
+            var httpResponse = await client.PostAsync(SecurityEndpoint, content);
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                _logger.Error("Security middleware: Response error: {@httpResponse}", new
+                {
+                    httpResponse.StatusCode,
+                    httpResponse.ReasonPhrase,
+                    httpResponse.Content,
+                });
+
+                await MakeForbiddenResponse(context);
+                return;
+            }
+
+            var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
+            response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, SecurityConstants.JsonDeserializerOpts);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "GRPC: Exception. Request data: {@debugData}", new
+            _logger.Error(ex, "Security middleware: Exception. Request data: {@debugData}", new
             {
                 Path = relativePath,
                 RequestData = requestData,
             });
         }
 
-        if (!response)
+        if (!(response?.Authorized ?? false))
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            await context.Response.CompleteAsync();
+            await MakeForbiddenResponse(context);
             return;
         }
 
         await _next(context);
     }
 
+    /// <summary>
+    /// Make http forbidden response
+    /// </summary>
+    /// <param name="context">Http response</param>
+    private async Task MakeForbiddenResponse(HttpContext context)
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        await context.Response.CompleteAsync();
+    }
 }

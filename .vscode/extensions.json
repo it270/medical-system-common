@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-dotnettools.csharp",
-        "mhutchie.git-graph",
-        "zxh404.vscode-proto3"
+        "mhutchie.git-graph"
     ]
 }
