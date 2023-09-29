@@ -112,7 +112,12 @@ public class SecurityCheckMiddleware
 
             if (!httpResponse.IsSuccessStatusCode)
             {
-                _logger.Error("Security middleware: Response error: {@httpResponse}", httpResponse);
+                _logger.Error("Security middleware: Response error: {@httpResponse}", new
+                {
+                    httpResponse.StatusCode,
+                    httpResponse.ReasonPhrase,
+                    httpResponse.Content,
+                });
 
                 await MakeForbiddenResponse(context);
                 return;
