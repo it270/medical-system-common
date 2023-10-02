@@ -30,7 +30,7 @@ public class SecurityCheckMiddleware
     /// <summary>
     /// Security endpoint (IAM microservice)
     /// </summary>
-    private static readonly string SecurityEndpoint = string.Concat(Environment.GetEnvironmentVariable("SYSTEM_SECURITY_CHECK_URL"), SecurityConstants.CheckPermissionUrl);
+    private static readonly string SecurityEndpoint = string.Concat(Environment.GetEnvironmentVariable("MS_IAM_URL"), SecurityConstants.CheckPermissionUrl);
 
     /// <summary>
     /// Default constructor
@@ -124,7 +124,7 @@ public class SecurityCheckMiddleware
             }
 
             var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
-            response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, SecurityConstants.JsonDeserializerOpts);
+            response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, GeneralConstants.DefaultJsonDeserializerOpts);
         }
         catch (Exception ex)
         {
