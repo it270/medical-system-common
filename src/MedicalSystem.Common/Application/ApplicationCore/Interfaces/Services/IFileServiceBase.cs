@@ -30,6 +30,14 @@ public interface IFileServiceBase
     Task<FileData> Download(string name, CancellationToken ct = default);
 
     /// <summary>
+    /// Download file with absolute file path
+    /// </summary>
+    /// <param name="filePath">Absolute file path</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    Task<FileData> DownloadFromRoot(string filePath, CancellationToken ct = default);
+
+    /// <summary>
     /// Delete file
     /// </summary>
     /// <param name="name">File name</param>
