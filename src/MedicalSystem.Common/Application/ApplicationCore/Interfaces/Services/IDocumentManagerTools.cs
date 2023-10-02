@@ -14,8 +14,7 @@ public interface IDocumentManagerTools
     /// Get template data from external microservice
     /// </summary>
     /// <param name="url">External service url</param>
-    /// <param name="moduleName">External module name</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>External template data</returns>
-    Task<TemplateParamValueHelper> GetTemplateDataExternal(Uri url, string moduleName, CancellationToken ct = default);
+    Task<TemplateParamValueHelper> GetTemplateDataExternal(Uri url, CancellationToken ct = default);
 }
