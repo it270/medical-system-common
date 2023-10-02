@@ -16,14 +16,6 @@ public static class SecurityConstants
     public const string CheckPermissionUrl = "/Security/CheckPermission";
 
     /// <summary>
-    /// Default JSON deserializer options
-    /// </summary>
-    public static readonly JsonSerializerOptions JsonDeserializerOpts = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    /// <summary>
     /// Ignored HTML url paths
     /// </summary>
     public static readonly string[] IgnoredPaths = new string[]
