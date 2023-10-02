@@ -3,6 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General;
+using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services;
+using It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 using It270.MedicalSystem.Common.Application.Core.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +29,8 @@ public static class ConfigCommonServices
         IConfiguration configuration)
     {
         await services.AddAuthService(configuration);
+        services.AddCommonWebServices();
+        services.AddEnumServices();
 
         return services;
     }
@@ -79,6 +84,28 @@ public static class ConfigCommonServices
                 };
             });
 
+        return services;
+    }
+
+    /// <summary>
+    /// Add common web services
+    /// </summary>
+    /// <param name="services">Service descriptors collection</param>
+    /// <returns>Service collection</returns>
+    public static IServiceCollection AddCommonWebServices(this IServiceCollection services)
+    {
+        services.AddScoped<IDocumentManagerTools, DocumentManagerTools>();
+        return services;
+    }
+
+    /// <summary>
+    /// Configure enum services
+    /// </summary>
+    /// <param name="services">Service descriptors collection</param>
+    /// <returns>Service collection</returns>
+    public static IServiceCollection AddEnumServices(this IServiceCollection services)
+    {
+        services.AddSingleton(typeof(IServiceReadEnum<>), typeof(ServiceReadEnum<>));
         return services;
     }
 }
