@@ -67,6 +67,11 @@ public static class TemplateEnums
         Time,
 
         /// <summary>
+        /// Image url param
+        /// </summary>
+        Image,
+
+        /// <summary>
         /// List object param
         /// </summary>
         List,
