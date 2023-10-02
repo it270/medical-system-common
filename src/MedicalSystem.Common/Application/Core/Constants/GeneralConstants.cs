@@ -1,4 +1,4 @@
-using static It270.MedicalSystem.Common.Application.Core.Enums.LanguageEnums;
+using System.Text.Json;
 
 namespace It270.MedicalSystem.Common.Application.Core.Constants;
 
@@ -13,6 +13,18 @@ public static class GeneralConstants
     /// Default administrator user name
     /// </summary>
     public const string SuperAdminUserName = "Admin";
+
+    #endregion
+
+    #region General
+
+    /// <summary>
+    /// Default JSON deserializer options
+    /// </summary>
+    public static readonly JsonSerializerOptions DefaultJsonDeserializerOpts = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     #endregion
 }
