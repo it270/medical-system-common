@@ -91,6 +91,23 @@ public abstract class FileServiceBase : IFileServiceBase
     }
 
     /// <summary>
+    /// Download file with absolute file path
+    /// </summary>
+    /// <param name="filePath">Absolute file path</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    public async Task<FileData> DownloadFromRoot(string filePath, CancellationToken ct = default)
+    {
+        var fileData = await _storageSystem.DownloadFile(filePath, ct);
+
+        if (fileData?.File == null)
+            return null;
+
+        _logger.Information("Downloaded file: {@id}", filePath);
+        return fileData;
+    }
+
+    /// <summary>
     /// Delete file
     /// </summary>
     /// <param name="name">File name</param>
