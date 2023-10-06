@@ -28,6 +28,9 @@ public static class ConfigCommonServices
     public static async Task<IServiceCollection> AddCommonServices(this IServiceCollection services,
         IConfiguration configuration)
     {
+        // Enable HTTP client
+        services.AddHttpClient();
+
         await services.AddAuthService(configuration);
         services.AddCommonWebServices();
         services.AddEnumServices();
