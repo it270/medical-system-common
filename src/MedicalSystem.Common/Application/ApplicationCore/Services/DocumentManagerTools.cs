@@ -20,16 +20,19 @@ public class DocumentManagerTools : IDocumentManagerTools
 {
     private readonly string _moduleName;
     private readonly ILogger _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
 
     /// <summary>
     /// Default constructor
     /// </summary>
     public DocumentManagerTools(ILogger logger,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHttpClientFactory httpClientFactory)
     {
         var settings = configuration.Get<CustomConfig>();
         _moduleName = settings?.Project?.ModuleName ?? LogConstants.EmptyModuleName;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
     #region Template functions
@@ -46,26 +49,28 @@ public class DocumentManagerTools : IDocumentManagerTools
 
         try
         {
-            var client = new HttpClient();
-            var httpResponse = await client.GetAsync(url, ct);
-
-            if (!httpResponse.IsSuccessStatusCode)
+            using (var client = _httpClientFactory.CreateClient())
             {
-                _logger.Error($"Module connection: Response error: {{@httpResponse}}", new
+                var httpResponse = await client.GetAsync(url, ct);
+
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    Module = _moduleName,
-                    httpResponse.StatusCode,
-                    httpResponse.ReasonPhrase,
-                    httpResponse.Content,
-                });
+                    _logger.Error($"Module connection: Response error: {{@httpResponse}}", new
+                    {
+                        Module = _moduleName,
+                        httpResponse.StatusCode,
+                        httpResponse.ReasonPhrase,
+                        httpResponse.Content,
+                    });
 
-                return null;
+                    return null;
+                }
+
+                var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
+                var jsonOpts = GeneralConstants.DefaultJsonDeserializerOpts;
+                jsonOpts.Converters.Add(new JsonStringEnumConverter());
+                response = JsonSerializer.Deserialize<TemplateParamValueHelper>(httpResponseContent, jsonOpts);
             }
-
-            var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
-            var jsonOpts = GeneralConstants.DefaultJsonDeserializerOpts;
-            jsonOpts.Converters.Add(new JsonStringEnumConverter());
-            response = JsonSerializer.Deserialize<TemplateParamValueHelper>(httpResponseContent, jsonOpts);
         }
         catch (Exception ex)
         {

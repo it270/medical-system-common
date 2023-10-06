@@ -26,6 +26,7 @@ public class SecurityCheckMiddleware
     private readonly RequestDelegate _next;
     private readonly string _moduleName;
     private readonly ILogger _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
 
     /// <summary>
     /// Security endpoint (IAM microservice)
@@ -37,12 +38,14 @@ public class SecurityCheckMiddleware
     /// </summary>
     public SecurityCheckMiddleware(IConfiguration configuration,
         RequestDelegate next,
-        ILogger logger)
+        ILogger logger,
+        IHttpClientFactory httpClientFactory)
     {
         var settings = configuration.Get<CustomConfig>();
         _moduleName = settings?.Project?.ModuleName ?? LogConstants.EmptyModuleName;
         _next = next;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
     /// <summary>
@@ -103,28 +106,31 @@ public class SecurityCheckMiddleware
 
         // Validate current request permissions
         CheckPermissionResponse response = null;
+
         try
         {
-            var client = new HttpClient();
-            var requestDataJson = JsonSerializer.Serialize(requestData);
-            var content = new StringContent(requestDataJson, Encoding.UTF8, Data.Json);
-            var httpResponse = await client.PostAsync(SecurityEndpoint, content);
-
-            if (!httpResponse.IsSuccessStatusCode)
+            using (var client = _httpClientFactory.CreateClient())
             {
-                _logger.Error("Security middleware: Response error: {@httpResponse}", new
+                var requestDataJson = JsonSerializer.Serialize(requestData);
+                var content = new StringContent(requestDataJson, Encoding.UTF8, Data.Json);
+                var httpResponse = await client.PostAsync(SecurityEndpoint, content);
+
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    httpResponse.StatusCode,
-                    httpResponse.ReasonPhrase,
-                    httpResponse.Content,
-                });
+                    _logger.Error("Security middleware: Response error: {@httpResponse}", new
+                    {
+                        httpResponse.StatusCode,
+                        httpResponse.ReasonPhrase,
+                        httpResponse.Content,
+                    });
 
-                await MakeForbiddenResponse(context);
-                return;
+                    await MakeForbiddenResponse(context);
+                    return;
+                }
+
+                var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
+                response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, GeneralConstants.DefaultJsonDeserializerOpts);
             }
-
-            var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
-            response = JsonSerializer.Deserialize<CheckPermissionResponse>(httpResponseContent, GeneralConstants.DefaultJsonDeserializerOpts);
         }
         catch (Exception ex)
         {

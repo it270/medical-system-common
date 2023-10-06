@@ -28,9 +28,13 @@ public static class ConfigCommonServices
     public static async Task<IServiceCollection> AddCommonServices(this IServiceCollection services,
         IConfiguration configuration)
     {
+        // Enable HTTP client
+        services.AddHttpClient();
+
         await services.AddAuthService(configuration);
         services.AddCommonWebServices();
         services.AddEnumServices();
+        services.AddStaticDataServices();
 
         return services;
     }
@@ -106,6 +110,17 @@ public static class ConfigCommonServices
     public static IServiceCollection AddEnumServices(this IServiceCollection services)
     {
         services.AddSingleton(typeof(IServiceReadEnum<>), typeof(ServiceReadEnum<>));
+        return services;
+    }
+
+    /// <summary>
+    /// Configure static data services
+    /// </summary>
+    /// <param name="services">Service descriptors collection</param>
+    /// <returns>Service collection</returns>
+    public static IServiceCollection AddStaticDataServices(this IServiceCollection services)
+    {
+        services.AddScoped<IStaticDataService, StaticDataService>();
         return services;
     }
 }
