@@ -5,6 +5,15 @@ namespace It270.MedicalSystem.Common.Application.Core.Constants;
 /// </summary>
 public static class IamConstants
 {
+    #region General
+
+    /// <summary>
+    /// Access token query parameter name
+    /// </summary>
+    public const string AccessTokenParamName = "access_token";
+
+    #endregion
+
     #region User attributes
 
     /// <summary>
