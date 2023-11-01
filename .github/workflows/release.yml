@@ -23,6 +23,8 @@ jobs:
       # Install the .NET SDK indicated in the global.json file
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
+      - name: Setup external dependencies
+        run: dotnet nuget add source https://nuget.devexpress.com/$DEV_EXTREME_KEY/api
       - name: Build
         run: dotnet build --configuration Release /p:Version=${VERSION}
       - name: Test
