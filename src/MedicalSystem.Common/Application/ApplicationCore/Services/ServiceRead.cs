@@ -4,6 +4,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Specifications;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
@@ -125,6 +127,32 @@ public abstract class ServiceRead<E, DTO, ET, GS> : IServiceRead<DTO, ET>
         return new CustomWebResponse()
         {
             ResponseBody = dataListDto
+        };
+    }
+
+    /// <summary>
+    /// Get elements list (DevExtreme)
+    /// </summary>
+    /// <param name="loadOptions">DevExtreme load options</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    public async Task<CustomWebResponse> GetList(DataSourceLoadOptions loadOptions, CancellationToken ct = default)
+    {
+        // Handle data with DevExtreme
+        loadOptions.RequireTotalCount = true;
+
+        if (loadOptions.Skip < 0)
+            loadOptions.Skip = 0;
+        if (loadOptions.Take <= 0)
+            loadOptions.Take = 10;
+
+        var dataListEntity = await _entityRepository.ListAsync(ct);
+        var loadResult = DataSourceLoader.Load(dataListEntity, loadOptions);
+        loadResult.data = _mapper.Map<List<DTO>>(loadResult.data);
+
+        return new CustomWebResponse()
+        {
+            ResponseBody = loadResult
         };
     }
 }
