@@ -24,6 +24,8 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
       - name: Setup external dependencies
+        env:
+          DEV_EXTREME_KEY: ${{ secrets.DEV_EXTREME_KEY }}
         run: dotnet nuget add source https://nuget.devexpress.com/$DEV_EXTREME_KEY/api
       - name: Build
         run: dotnet build --configuration Release /p:Version=${VERSION}
