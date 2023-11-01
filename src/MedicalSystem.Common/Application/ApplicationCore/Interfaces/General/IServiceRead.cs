@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using DevExtreme.AspNet.Mvc;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
 using It270.MedicalSystem.Common.Application.Core.Interfaces;
 
@@ -45,4 +46,12 @@ public interface IServiceRead<DTO, ET>
     /// <param name="ct">Cancellation token</param>
     /// <returns>Process result</returns>
     Task<CustomWebResponse> GetList(int skip, int take, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get elements list (DevExtreme)
+    /// </summary>
+    /// <param name="loadOptions">DevExtreme load options</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    Task<CustomWebResponse> GetList(DataSourceLoadOptions loadOptions, CancellationToken ct = default);
 }
