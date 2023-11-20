@@ -17,4 +17,12 @@ public interface IDocumentManagerTools
     /// <param name="ct">Cancellation token</param>
     /// <returns>External template data</returns>
     Task<TemplateParamValueHelper> GetTemplateDataExternal(Uri url, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get boolean value from external microservice
+    /// </summary>
+    /// <param name="url">External service url</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>True if sentence is applied. false otherwise</returns>
+    Task<bool> GetBooleanValue(Uri url, CancellationToken ct = default);
 }
