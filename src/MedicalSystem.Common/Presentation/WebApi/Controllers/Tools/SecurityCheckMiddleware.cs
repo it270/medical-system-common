@@ -57,11 +57,11 @@ public class SecurityCheckMiddleware
         var relativePath = context?.Request?.Path.ToUriComponent();
 
         // Discard static files and custom services
-        var hasFilePath = SecurityConstants.IgnoredPaths
+        var isInternalPath = SecurityConstants.IgnoredPaths
             .Where(p => relativePath.Contains(p))
             .Any();
 
-        if (hasFilePath)
+        if (isInternalPath)
         {
             await _next(context);
             return;

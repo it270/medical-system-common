@@ -66,10 +66,59 @@ public class DocumentManagerTools : IDocumentManagerTools
                     return null;
                 }
 
-                var httpResponseContent = await httpResponse.Content.ReadAsStringAsync();
+                var httpResponseContent = await httpResponse.Content.ReadAsStringAsync(ct);
                 var jsonOpts = GeneralConstants.DefaultJsonDeserializerOpts;
                 jsonOpts.Converters.Add(new JsonStringEnumConverter());
                 response = JsonSerializer.Deserialize<TemplateParamValueHelper>(httpResponseContent, jsonOpts);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"Module connection: Exception. Request data: {{@debugData}}", new
+            {
+                Module = _moduleName,
+                Path = url,
+            });
+        }
+
+        return response;
+    }
+
+    #endregion
+
+    #region Validation functions
+
+    /// <summary>
+    /// Get boolean response from external microservice
+    /// </summary>
+    /// <param name="url">External service url</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>True if sentence is applied. false otherwise</returns>
+    public async Task<bool> GetBooleanValue(Uri url, CancellationToken ct = default)
+    {
+        var response = false;
+
+        try
+        {
+            using (var client = _httpClientFactory.CreateClient())
+            {
+                var httpResponse = await client.GetAsync(url, ct);
+
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    _logger.Error($"Module connection: Response error: {{@httpResponse}}", new
+                    {
+                        Module = _moduleName,
+                        httpResponse.StatusCode,
+                        httpResponse.ReasonPhrase,
+                        httpResponse.Content,
+                    });
+
+                    return false;
+                }
+
+                var httpResponseContent = await httpResponse.Content.ReadAsStringAsync(ct);
+                response = JsonSerializer.Deserialize<bool>(httpResponseContent);
             }
         }
         catch (Exception ex)
