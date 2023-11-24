@@ -20,23 +20,25 @@ public static class SecurityConstants
     /// </summary>
     public static readonly string[] IgnoredPaths = new string[]
     {
-            // Swagger
-            "/swagger",
-            // Health check
-            "/health",
-            // Internal services
-            "/Internal/",
-            // Security services
-            "/Security/",
-            // General public services
-            "/Public/",
-            // Document manager MVC templates        
-            "/Template/Default/",
-            // Static web files
-            "/favicon.ico",
-            "/img/",
-            "/css/",
-            "/js/",
+        // Swagger
+        "/swagger",
+        // Health check
+        "/health",
+        // IAM auth services
+        "/Auth/",
+        // Internal services
+        "/Internal/",
+        // Security services
+        "/Security/",
+        // General public services
+        "/Public/",
+        // Document manager MVC templates        
+        "/Template/Default/",
+        // Static web files
+        "/favicon.ico",
+        "/img/",
+        "/css/",
+        "/js/",
     };
 
     /// <summary>
