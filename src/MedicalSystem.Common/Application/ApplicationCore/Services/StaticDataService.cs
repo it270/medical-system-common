@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using static It270.MedicalSystem.Common.Application.Core.Enums.StaticData.StaticDataEnums;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 
@@ -18,7 +19,7 @@ public class StaticDataService : IStaticDataService
 {
     private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
-    private static readonly string _connectionGeographic = Environment.GetEnvironmentVariable("MS_STATIC_DATA_URL");
+    private static readonly string _staticDataUrl = Environment.GetEnvironmentVariable("MS_STATIC_DATA_URL");
 
     /// <summary>
     /// Constructor
@@ -29,6 +30,8 @@ public class StaticDataService : IStaticDataService
         _logger = logger;
         _httpClientFactory = httpClientFactory;
     }
+
+    #region Geographic data
 
     /// <summary>
     /// Validate geographic region
@@ -42,7 +45,7 @@ public class StaticDataService : IStaticDataService
         {
             using (var client = _httpClientFactory.CreateClient())
             {
-                var response = await client.GetAsync($"{_connectionGeographic}/GeographicRegion/{geographicRegionId}", ct);
+                var response = await client.GetAsync($"{_staticDataUrl}/GeographicRegion/{geographicRegionId}", ct);
                 var jsonStr = await response.Content.ReadAsStringAsync(ct);
 
                 return !string.IsNullOrEmpty(jsonStr) && response.IsSuccessStatusCode;
@@ -71,7 +74,7 @@ public class StaticDataService : IStaticDataService
                     .Select(id => $"ids={id}");
                 var idsParamsStr = string.Join('&', idsParams);
 
-                var responseLocation = await client.GetAsync($"{_connectionGeographic}/GeographicRegion/GetByIds?{idsParamsStr}", ct);
+                var responseLocation = await client.GetAsync($"{_staticDataUrl}/GeographicRegion/GetByIds?{idsParamsStr}", ct);
                 var staticDataGroup = JsonSerializer.Deserialize<Dictionary<string, string>>(await responseLocation.Content.ReadAsStringAsync(ct), GeneralConstants.DefaultJsonDeserializerOpts);
 
                 return staticDataGroup;
@@ -84,4 +87,36 @@ public class StaticDataService : IStaticDataService
             return new();
         }
     }
+
+    #endregion
+
+    #region Static data
+
+    /// <summary>
+    /// Validate static data
+    /// </summary>
+    /// <param name="staticDataId">Static data identifier</param>
+    /// <param name="staticGroup">Static group</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>True if entity exists. false otherwise</returns>
+    public async Task<bool> ValidateStaticData(int staticDataId, StaticGroupEnum staticGroup, CancellationToken ct = default)
+    {
+        try
+        {
+            using (var client = _httpClientFactory.CreateClient())
+            {
+                var response = await client.GetAsync($"{_staticDataUrl}/StaticData/GetByGroup?id={staticDataId}&group={(int)staticGroup}", ct);
+                var jsonStr = await response.Content.ReadAsStringAsync(ct);
+
+                return !string.IsNullOrEmpty(jsonStr) && response.IsSuccessStatusCode;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Static data connection error");
+            return false;
+        }
+    }
+
+    #endregion
 }
