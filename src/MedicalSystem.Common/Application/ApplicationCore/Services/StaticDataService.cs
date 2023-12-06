@@ -118,5 +118,31 @@ public class StaticDataService : IStaticDataService
         }
     }
 
+    /// <summary>
+    /// Get geographic regions
+    /// </summary>
+    /// <param name="staticId">Geographic regions identifiers</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Geographic regions as a dictionary</returns>
+    public async Task<Dictionary<string, string>> GetStaticDataByID(int staticId, CancellationToken ct = default)
+    {
+        try
+        {
+            using (var client = _httpClientFactory.CreateClient())
+            {
+                var responseLocation = await client.GetAsync($"{_staticDataUrl}/StaticData/Get/{staticId}", ct);
+                var staticDataGroup = JsonSerializer.Deserialize<Dictionary<string, string>>(await responseLocation.Content.ReadAsStringAsync(ct), GeneralConstants.DefaultJsonDeserializerOpts);
+
+                return staticDataGroup;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Static data connection error");
+            return new();
+        }
+    }
+
     #endregion
 }
