@@ -41,5 +41,12 @@ public interface IStaticDataService
     /// <returns>True if entity exists. false otherwise</returns>
     Task<bool> ValidateStaticData(int staticDataId, StaticGroupEnum staticGroup, CancellationToken ct = default);
 
+    /// <summary>
+    /// Get geographic regions
+    /// </summary>
+    /// <param name="staticId">Geographic regions identifiers</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Geographic regions as a dictionary</returns>
+    Task<Dictionary<string, string>> GetStaticDataByID(int staticId, CancellationToken ct = default);
     #endregion
 }
