@@ -113,7 +113,7 @@ public class StaticDataEnums
         /// <summary>
         /// AdmissionPathway group
         /// </summary>
-        AdmisssionPathway,
+        AdmissionPathway,
 
         /// <summary>
         /// Priority group
