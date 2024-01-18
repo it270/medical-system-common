@@ -109,5 +109,20 @@ public class StaticDataEnums
         /// Currency group
         /// </summary>
         Currency,
+
+        /// <summary>
+        /// AdmissionPathway group
+        /// </summary>
+        AdmisssionPathway,
+
+        /// <summary>
+        /// Priority group
+        /// </summary>
+        Priority,
+
+        /// <summary>
+        /// AdmissionCause group
+        /// </summary>
+        AdmissionCause,
     }
 }
