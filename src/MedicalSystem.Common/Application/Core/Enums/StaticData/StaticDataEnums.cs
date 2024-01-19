@@ -124,5 +124,10 @@ public class StaticDataEnums
         /// AdmissionCause group
         /// </summary>
         AdmissionCause,
+
+        /// <summary>
+        /// RelationshipType group
+        /// </summary>
+        RelationshipType,
     }
 }
