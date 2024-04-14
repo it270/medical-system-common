@@ -129,5 +129,60 @@ public class StaticDataEnums
         /// RelationshipType group
         /// </summary>
         RelationshipType,
+
+        /// <summary>
+        /// Destination group
+        /// </summary>
+        Destination,
+
+        /// <summary>
+        /// OptionYN group
+        /// </summary>
+        OptionYN,
+
+        /// <summary>
+        /// Purpose group
+        /// </summary>
+        Purpose,
+
+        /// <summary>
+        /// Diagnosis group
+        /// </summary>
+        Diagnosis,
+
+        /// <summary>
+        /// DiagnosticType group
+        /// </summary>
+        DiagnosticType,
+
+        /// <summary>
+        /// Classification group
+        /// </summary>
+        Classification,
+        
+        /// <summary>
+        /// ViaAdministration group
+        /// </summary>
+        ViaAdministration,
+
+        /// <summary>
+        /// PharmaceuticalForm group
+        /// </summary>
+        PharmaceuticalForm,
+
+        /// <summary>
+        /// UnitAdministration group
+        /// </summary>
+        UnitAdministration,
+
+        /// <summary>
+        /// DispatchUnit group
+        /// </summary>
+        DispatchUnit,
+
+        /// <summary>
+        /// Frequency group
+        /// </summary>
+        Frequency,
     }
 }
