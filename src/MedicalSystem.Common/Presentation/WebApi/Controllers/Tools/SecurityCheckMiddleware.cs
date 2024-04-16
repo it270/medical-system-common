@@ -156,7 +156,23 @@ public class SecurityCheckMiddleware
     /// <param name="context">Http response</param>
     private async Task MakeForbiddenResponse(HttpContext context)
     {
+        var controllerName = context.GetControllerName();
+        var actionName = context.GetActionName();
+        var username = context.GetUserName();
+
+        var forbiddenInfo = new
+        {
+            ControllerName = controllerName,
+            ActionName = actionName,
+            Username = username,
+            Message = $"Access to {controllerName}/{actionName} by user '{username}' is forbidden"
+        };
+
+        var jsonResponse = JsonSerializer.Serialize(forbiddenInfo);
+
         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(jsonResponse);
         await context.Response.CompleteAsync();
     }
 }
