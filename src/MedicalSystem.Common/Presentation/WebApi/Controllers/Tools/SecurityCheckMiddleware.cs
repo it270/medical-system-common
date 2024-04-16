@@ -104,7 +104,7 @@ public class SecurityCheckMiddleware
             return;
         }
 
-        // Validate current request permissions
+        // Validate current request permissions 
         CheckPermissionResponse response = null;
 
         try
