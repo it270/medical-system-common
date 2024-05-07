@@ -129,5 +129,120 @@ public class StaticDataEnums
         /// RelationshipType group
         /// </summary>
         RelationshipType,
+
+        /// <summary>
+        /// Destination group
+        /// </summary>
+        Destination,
+
+        /// <summary>
+        /// OptionYN group
+        /// </summary>
+        OptionYN,
+
+        /// <summary>
+        /// Purpose group
+        /// </summary>
+        Purpose,
+
+        /// <summary>
+        /// Diagnosis group
+        /// </summary>
+        Diagnosis,
+
+        /// <summary>
+        /// DiagnosticType group
+        /// </summary>
+        DiagnosticType,
+
+        /// <summary>
+        /// Classification group
+        /// </summary>
+        Classification,
+
+        /// <summary>
+        /// ViaAdministration group
+        /// </summary>
+        ViaAdministration,
+
+        /// <summary>
+        /// PharmaceuticalForm group
+        /// </summary>
+        PharmaceuticalForm,
+
+        /// <summary>
+        /// UnitAdministration group
+        /// </summary>
+        UnitAdministration,
+
+        /// <summary>
+        /// DispatchUnit group
+        /// </summary>
+        DispatchUnit,
+
+        /// <summary>
+        /// Frequency group
+        /// </summary>
+        Frequency,
+
+        /// <summary>
+        /// TypeMedicationRequest group
+        /// </summary>
+        TypeMedicationRequest,
+
+        /// <summary>
+        /// During group
+        /// </summary>
+        During,
+
+        /// <summary>
+        /// TypeDisability group
+        /// </summary>
+        TypeDisability,
+
+        /// <summary>
+        /// LevelDisability group
+        /// </summary>
+        LevelDisability,
+
+        /// <summary>
+        /// TypeDisabilityForm group
+        /// </summary>
+        TypeDisabilityForm,
+
+        /// <summary>
+        /// PrimaryReason group
+        /// </summary>
+        PrimaryReason,
+
+        /// <summary>
+        /// RetroactiveOption group
+        /// </summary>
+        RetroactiveOption,
+
+        /// <summary>
+        /// ModalityDisability group
+        /// </summary>
+        ModalityDisability,
+
+        /// <summary>
+        /// DisabilityOrigin group
+        /// </summary>
+        DisabilityOrigin,
+
+        /// <summary>
+        /// SiteTemperature group
+        /// </summary>
+        SiteTemperature,
+
+        /// <summary>
+        /// Egress group
+        /// </summary>
+        Egress,
+
+        /// <summary>
+        /// Egress group
+        /// </summary>
+        ProcedureType,
     }
 }
