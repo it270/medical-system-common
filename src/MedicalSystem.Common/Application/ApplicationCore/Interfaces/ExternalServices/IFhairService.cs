@@ -16,6 +16,6 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Exte
         /// <param name="url">External service url</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if sentence is applied. false otherwise</returns>
-        Task<HttpResponseMessage> GetEntityFhir(string url, CancellationToken ct = default, int status);
+        Task<HttpResponseMessage> GetEntityFhir(string url, int status,CancellationToken ct = default);
     }
 }

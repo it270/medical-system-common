@@ -109,7 +109,7 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
         /// <param name="ct"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> GetEntityFhir(string url, CancellationToken ct = default, int status = 0)
+        public async Task<HttpResponseMessage> GetEntityFhir(string url, int status = 0,CancellationToken ct = default )
         {
             var token = GetAccessToken();
             if (token == null) 
