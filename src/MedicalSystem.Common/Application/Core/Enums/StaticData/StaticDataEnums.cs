@@ -159,7 +159,7 @@ public class StaticDataEnums
         /// Classification group
         /// </summary>
         Classification,
-        
+
         /// <summary>
         /// ViaAdministration group
         /// </summary>
@@ -184,5 +184,65 @@ public class StaticDataEnums
         /// Frequency group
         /// </summary>
         Frequency,
+
+        /// <summary>
+        /// TypeMedicationRequest group
+        /// </summary>
+        TypeMedicationRequest,
+
+        /// <summary>
+        /// During group
+        /// </summary>
+        During,
+
+        /// <summary>
+        /// TypeDisability group
+        /// </summary>
+        TypeDisability,
+
+        /// <summary>
+        /// LevelDisability group
+        /// </summary>
+        LevelDisability,
+
+        /// <summary>
+        /// TypeDisabilityForm group
+        /// </summary>
+        TypeDisabilityForm,
+
+        /// <summary>
+        /// PrimaryReason group
+        /// </summary>
+        PrimaryReason,
+
+        /// <summary>
+        /// RetroactiveOption group
+        /// </summary>
+        RetroactiveOption,
+
+        /// <summary>
+        /// ModalityDisability group
+        /// </summary>
+        ModalityDisability,
+
+        /// <summary>
+        /// DisabilityOrigin group
+        /// </summary>
+        DisabilityOrigin,
+
+        /// <summary>
+        /// SiteTemperature group
+        /// </summary>
+        SiteTemperature,
+
+        /// <summary>
+        /// Egress group
+        /// </summary>
+        Egress,
+
+        /// <summary>
+        /// Egress group
+        /// </summary>
+        ProcedureType,
     }
 }
