@@ -123,13 +123,13 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
             if (response.StatusCode == HttpStatusCode.Unauthorized && status == 0)
             {
                 await RefreshToken(ct);
-                response = await GetEntityFhir(url, ct, 1);
+                response = await GetEntityFhir(url, 1,ct );
             }
 
             if (response.StatusCode == HttpStatusCode.Unauthorized && status == 1)
             {
                 await Log(ct);
-                response = await GetEntityFhir(url, ct, 2);
+                response = await GetEntityFhir(url, 2,ct);
             }
 
             return response;
