@@ -7,6 +7,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
 {
@@ -40,14 +41,14 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
             }
         }
 
-        async Task<Patient> IFhairService.GetPatient(string ccPatient, CancellationToken ct)
+        async Task<List<Patient>> IFhairService.GetPatient(string ccPatient, CancellationToken ct)
         {
             try
             {
                 using var client = _httpClientFactory.CreateClient();
                 var response = await client.GetAsync($"{_gatewayUrl}/Patient?identifier={ccPatient}", ct);
                 var jsonStr = await response.Content.ReadAsStringAsync(ct);
-                var patient = JsonSerializer.Deserialize<Patient>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
+                var patient = JsonSerializer.Deserialize<List<Patient>>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
 
                 return patient;
             }
