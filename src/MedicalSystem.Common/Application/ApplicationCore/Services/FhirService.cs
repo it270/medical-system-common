@@ -40,14 +40,14 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
             }
         }
 
-        async Task<Patient> IFhairService.GetPatient(Patient patient, CancellationToken ct)
+        async Task<Patient> IFhairService.GetPatient(string ccPatient, CancellationToken ct)
         {
             try
             {
                 using var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{_gatewayUrl}/Patient/{patient.Id}", ct);
+                var response = await client.GetAsync($"{_gatewayUrl}/Patient?identifier={ccPatient}", ct);
                 var jsonStr = await response.Content.ReadAsStringAsync(ct);
-                patient = JsonSerializer.Deserialize<Patient>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
+                var patient = JsonSerializer.Deserialize<Patient>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
 
                 return patient;
             }
