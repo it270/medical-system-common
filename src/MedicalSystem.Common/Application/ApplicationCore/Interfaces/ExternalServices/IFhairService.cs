@@ -17,7 +17,7 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Exte
         /// <param name="url">External service url</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if sentence is applied. false otherwise</returns>
-        Task<List<Patient>> GetPatient(string patient, CancellationToken ct = default);
+        Task<List<Patient>> GetPatient(string ccPatient, string idTypeDocument, CancellationToken ct = default);
 
         /// <summary>
         /// Get boolean value from external microservice

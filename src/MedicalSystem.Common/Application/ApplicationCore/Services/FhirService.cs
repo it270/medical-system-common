@@ -58,5 +58,22 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
                 return null;
             }
         }
+        async Task<Patient> IFhairService.GetPatientDoc(string ccPatient,string idTypeDocument, CancellationToken ct)
+        {
+            try
+            {
+                using var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"{_gatewayUrl}/Patient?identifier={ccPatient}&identifier={idTypeDocument}", ct);
+                var jsonStr = await response.Content.ReadAsStringAsync(ct);
+                var patient = JsonSerializer.Deserialize<Patient>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
+
+                return patient;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "gateway connection error");
+                return null;
+            }
+        }
     }
 }
