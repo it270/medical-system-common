@@ -41,7 +41,7 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
             }
         }
 
-        async Task<List<Patient>> IFhairService.GetPatient(string ccPatient, string typeDocument, CancellationToken ct)
+        async Task<List<Patient>> IFhairService.GetPatient(string ccPatient, CancellationToken ct)
         {
             try
             {
@@ -59,5 +59,22 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
             }
         }
 
+        public async Task<string> GetPatientDoc(string ccPatient, string idTypeDocument, CancellationToken ct = default)
+        {
+            try
+            {
+                using var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"{_gatewayUrl}/Patient/Exist?identifierValue={ccPatient}&identifierCode=1%{idTypeDocument}", ct);
+                var jsonStr = await response.Content.ReadAsStringAsync(ct);
+                var patient = JsonSerializer.Deserialize<string>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
+
+                return patient;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "gateway connection error");
+                return null;
+            }
+        }
     }
 }
