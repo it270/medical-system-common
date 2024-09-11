@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.ExternalServices;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Services;
@@ -35,6 +36,7 @@ public static class ConfigCommonServices
         services.AddCommonWebServices();
         services.AddEnumServices();
         services.AddStaticDataServices();
+        services.AddGatewayServices();
 
         return services;
     }
@@ -121,6 +123,17 @@ public static class ConfigCommonServices
     public static IServiceCollection AddStaticDataServices(this IServiceCollection services)
     {
         services.AddScoped<IStaticDataService, StaticDataService>();
+        return services;
+    }
+
+    /// <summary>
+    /// Configure static data services
+    /// </summary>
+    /// <param name="services">Service descriptors collection</param>
+    /// <returns>Service collection</returns>
+    public static IServiceCollection AddGatewayServices(this IServiceCollection services)
+    {
+        services.AddScoped<IFhairService, FhirService>();
         return services;
     }
 }

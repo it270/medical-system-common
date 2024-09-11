@@ -1,4 +1,5 @@
-﻿using System;
+﻿using It270.MedicalSystem.Common.Application.Core.Entities.Fhir;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -16,6 +17,14 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Exte
         /// <param name="url">External service url</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if sentence is applied. false otherwise</returns>
-        Task<HttpResponseMessage> GetEntityFhir(string url, int status,CancellationToken ct = default);
+        Task<Patient> GetPatient(Patient patient, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get boolean value from external microservice
+        /// </summary>
+        /// <param name="url">External service url</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>True if sentence is applied. false otherwise</returns>
+        Task<Patient> AddPatient(Patient patient, CancellationToken ct = default);
     }
 }
