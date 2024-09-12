@@ -28,7 +28,7 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
             try
             {
                 using var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{_gatewayUrl}/Patient/{patient.Id}", ct);
+                var response = await client.GetAsync($"{_gatewayUrl}/Patient", ct);
                 var jsonStr = await response.Content.ReadAsStringAsync(ct);
                 patient = JsonSerializer.Deserialize<Patient>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
 
