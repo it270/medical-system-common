@@ -66,9 +66,8 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
                 using var client = _httpClientFactory.CreateClient();
                 var response = await client.GetAsync($"{_gatewayUrl}/Patient/Exist?identifierValue={ccPatient}&identifierCode=1%{idTypeDocument}", ct);
                 var jsonStr = await response.Content.ReadAsStringAsync(ct);
-                var patient = JsonSerializer.Deserialize<string>(jsonStr, GeneralConstants.DefaultJsonDeserializerOpts);
 
-                return patient;
+                return jsonStr;
             }
             catch (Exception ex)
             {
