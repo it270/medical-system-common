@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.ExternalServices
 {
-    internal interface IFhairService
+    public interface IFhairService
     {
 
         /// <summary>
