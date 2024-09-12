@@ -6,26 +6,32 @@ using System.Threading.Tasks;
 
 namespace It270.MedicalSystem.Common.Application.Core.Entities.Fhir
 {
+
     public class Patient
     {
-        #region PatientData
-        public int? Id { get; set; }
+        public int total { get; set; }
+        public Listsearch[] listSearch { get; set; }
+    }
+
+    public class Listsearch
+    {
+        public int id { get; set; }
         public int patientTypeDocumentId { get; set; }
-        public string IdVersion { get; set; }
-        public string LastUpdated { get; set; }
-        public string NameGiven { get; set; }
-        public string Namefamily { get; set; }
-        public DateTime BirthDate { get; set; }
-        public string CommunicationCode { get; set; }
-        public string IdentifierValue { get; set; }
-        public string IdentifierCode { get; set; }
-        public string TelecomPhoneValue { get; set; }
-        public string TelecomSmsValue { get; set; }
-        public string TelecomEmailValue { get; set; }
-        public string Gender { get; set; }
+        public string idVersion { get; set; }
+        public string lastUpdated { get; set; }
+        public string nameGiven { get; set; }
+        public string namefamily { get; set; }
+        public DateTime birthDate { get; set; }
+        public string communicationCode { get; set; }
+        public string identifierValue { get; set; }
+        public string identifierCode { get; set; }
+        public string telecomPhoneValue { get; set; }
+        public string telecomSmsValue { get; set; }
+        public string telecomEmailValue { get; set; }
+        public string gender { get; set; }
         public string patientDayDeceased { get; set; }
         public string patientBloodType { get; set; }
-        public string MaritalStatus { get; set; }
+        public string maritalStatus { get; set; }
         public string patientBirthGender { get; set; }
         public string patientGender { get; set; }
         public string patientReligion { get; set; }
@@ -39,35 +45,29 @@ namespace It270.MedicalSystem.Common.Application.Core.Entities.Fhir
         public string patientAdvanceWill { get; set; }
         public string patientOrganDonor { get; set; }
         public string patientSpecialPopulation { get; set; }
-        public string PatientCallAs { get; set; }
+        public string patientCallAs { get; set; }
         public string patientClassifyAs { get; set; }
         public string patientAddressComplement { get; set; }
-        public bool? Active { get; set; }
-        public bool Simple { get; set; } = false;
-        #endregion
-
-        #region geograpihc patiente
+        public bool active { get; set; }
+        public bool simple { get; set; }
         public string adressCountry { get; set; }
-        public string AdressCityResident { get; set; }
+        public string adressCityResident { get; set; }
         public string patientNationality { get; set; }
-        public string BornCity { get; set; }
+        public string bornCity { get; set; }
         public string patientNeighborhood { get; set; }
-        #endregion
-
-        public List<Disability> patientTypeDisability { get; set; }
-
-
+        public Patienttypedisability[] patientTypeDisability { get; set; }
     }
-    public class Disability
+
+    public class Patienttypedisability
     {
-        public string TypeDisability { get; set; }
-        public string IdTypeDisability { get; set; }
-        public string GradeDisability { get; set; }
-        public string IdGradeDisability { get; set; }
-        public string NameDisability { get; set; }
-        public string Aftermath { get; set; }
-        public string InitDate { get; set; }
-        public string EndDate { get; set; }
-
+        public string typeDisability { get; set; }
+        public string idTypeDisability { get; set; }
+        public string gradeDisability { get; set; }
+        public string idGradeDisability { get; set; }
+        public string nameDisability { get; set; }
+        public string aftermath { get; set; }
+        public string initDate { get; set; }
+        public object endDate { get; set; }
     }
+
 }
