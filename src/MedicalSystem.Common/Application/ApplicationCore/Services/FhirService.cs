@@ -16,14 +16,12 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services
     {
         private readonly ILogger _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IIamService _iamService;
         private static readonly string _gatewayUrl = Environment.GetEnvironmentVariable("MS_GATEWAY_URL");
 
-        public FhirService(ILogger logger, IHttpClientFactory httpClientFactory, IIamService iamService)
+        public FhirService(ILogger logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
-            _iamService = iamService;
         }
 
         async Task<Patient> IFhairService.AddPatient(Patient patient, string bearer, CancellationToken ct)
