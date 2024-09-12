@@ -18,7 +18,7 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Exte
         /// <param name="ccPatient"></param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if sentence is applied. false otherwise</returns>
-        Task<List<Patient>> GetPatient(string ccPatient, CancellationToken ct = default);
+        Task<List<Patient>> GetPatient(string ccPatient, string bearer, CancellationToken ct = default);
 
         /// <summary>
         /// Get boolean value from external microservice
@@ -27,7 +27,7 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Exte
         /// <param name="idTypeDocument"></param>        
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if sentence is applied. false otherwise</returns>
-        Task<string> GetPatientDoc(string ccPatient, string idTypeDocument, CancellationToken ct = default);
+        Task<string> GetPatientDoc(string ccPatient, string idTypeDocument, string bearer, CancellationToken ct = default);
 
         /// <summary>
         /// Get boolean value from external microservice
@@ -35,6 +35,6 @@ namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Exte
         /// <param name="patient">External service url</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if sentence is applied. false otherwise</returns>
-        Task<Patient> AddPatient(Patient patient, CancellationToken ct = default);
+        Task<Patient> AddPatient(Patient patient, string bearer, CancellationToken ct = default);
     }
 }
