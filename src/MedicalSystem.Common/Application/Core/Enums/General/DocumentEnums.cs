@@ -74,5 +74,9 @@ public class DocumentEnums
         /// Carné diplomático
         /// </summary>
         CD,
+        /// <summary>
+        /// Registro mercantil
+        /// </summary>
+        RM,
     }
 }
