@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.General
+namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services
 {
     public interface IExternalApiHelper
     {
