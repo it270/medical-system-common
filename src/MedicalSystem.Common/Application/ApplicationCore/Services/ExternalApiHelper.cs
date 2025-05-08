@@ -17,20 +17,19 @@ namespace It270.MedicalManagement.EthicsCommittee.Application.ApplicationCore.Se
         private readonly TokenService _tokenService;
         private readonly ILogger _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-
-        public ExternalApiHelper(TokenService tokenService)
-        {
-            _tokenService = tokenService;
-        }
+        private static readonly string _ManagementDataUrl = Environment.GetEnvironmentVariable("MS_MANAGEMENT_DATA_URL");
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ExternalApiHelper(ILogger logger,
+        public ExternalApiHelper(
+            TokenService tokenService,
+            ILogger logger,
             IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _tokenService = tokenService;
         }
 
         #region ValidateMicroservice
@@ -49,9 +48,7 @@ namespace It270.MedicalManagement.EthicsCommittee.Application.ApplicationCore.Se
 
                 string token = _tokenService.GetToken();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-                string url = $"{microservice}/{service}/{data}";
-                HttpResponseMessage response = await client.GetAsync(url);
+                HttpResponseMessage response = await client.GetAsync($"{_ManagementDataUrl}/{microservice}/{service}/{data}");
 
                 var errorStatusCodes = new HashSet<HttpStatusCode>
                 {
@@ -103,12 +100,11 @@ namespace It270.MedicalManagement.EthicsCommittee.Application.ApplicationCore.Se
         {
             try
             {
-                HttpClient httpClient = new();
+                using var client = _httpClientFactory.CreateClient();
                 string token = _tokenService.GetToken();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                HttpResponseMessage response = await client.GetAsync($"{_ManagementDataUrl}/{microservice}/{service}/{data}");
 
-                string url = $"{microservice}/{service}/{data}";
-                HttpResponseMessage response = await httpClient.GetAsync(url);
 
                 var errorStatusCodes = new HashSet<HttpStatusCode>
                 {
@@ -143,111 +139,6 @@ namespace It270.MedicalManagement.EthicsCommittee.Application.ApplicationCore.Se
         }
         #endregion
 
-        #region GetJsonFromMicroserviceAsync
-        /// <summary>
-        /// GetJsonFromMicroserviceAsync
-        /// </summary>
-        /// <param name="microservice"></param>
-        /// <param name="service"></param>
-        /// <param name="data"></param>
-        /// <returns>Json response</returns>
-        public async Task<string?> PutMicroservice(string microservice, string service, string data)
-        {
-            try
-            {
-                HttpClient httpClient = new();
-                string token = _tokenService.GetToken();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                string url = $"{microservice}/{service}/{data}";
-                HttpResponseMessage response = await httpClient.PutAsync(url, content);
-
-                var errorStatusCodes = new HashSet<HttpStatusCode>
-                {
-                    HttpStatusCode.Unauthorized,
-                    HttpStatusCode.Forbidden,
-                    HttpStatusCode.InternalServerError,
-                    HttpStatusCode.BadRequest,
-                    HttpStatusCode.GatewayTimeout,
-                    HttpStatusCode.ServiceUnavailable,
-                    HttpStatusCode.RequestTimeout,
-                    HttpStatusCode.TooManyRequests,
-                    HttpStatusCode.NotAcceptable,
-                    HttpStatusCode.Conflict,
-                    HttpStatusCode.PreconditionFailed,
-                    HttpStatusCode.NotFound
-                };
-
-                if (errorStatusCodes.Contains(response.StatusCode) || response.StatusCode != HttpStatusCode.OK)
-                {
-                    return null;
-                }
-
-                string jsonContent = await response.Content.ReadAsStringAsync();
-                return jsonContent;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "data connection error");
-                return ex.Message;
-            }
-
-        }
-        #endregion
-
-        #region GetJsonFromMicroserviceAsync
-        /// <summary>
-        /// GetJsonFromMicroserviceAsync
-        /// </summary>
-        /// <param name="microservice"></param>
-        /// <param name="service"></param>
-        /// <param name="data"></param>
-        /// <returns>Json response</returns>
-        public async Task<string?> PostMicroservice(string microservice, string service, string data)
-        {
-            try
-            {
-                HttpClient httpClient = new();
-                string token = _tokenService.GetToken();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-                string url = $"{microservice}/{service}/{data}";
-                HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await httpClient.PutAsync(url,content);
-
-                var errorStatusCodes = new HashSet<HttpStatusCode>
-                {
-                    HttpStatusCode.Unauthorized,
-                    HttpStatusCode.Forbidden,
-                    HttpStatusCode.InternalServerError,
-                    HttpStatusCode.BadRequest,
-                    HttpStatusCode.GatewayTimeout,
-                    HttpStatusCode.ServiceUnavailable,
-                    HttpStatusCode.RequestTimeout,
-                    HttpStatusCode.TooManyRequests,
-                    HttpStatusCode.NotAcceptable,
-                    HttpStatusCode.Conflict,
-                    HttpStatusCode.PreconditionFailed,
-                    HttpStatusCode.NotFound
-                };
-
-                if (errorStatusCodes.Contains(response.StatusCode) || response.StatusCode != HttpStatusCode.OK)
-                {
-                    return null;
-                }
-
-                string jsonContent = await response.Content.ReadAsStringAsync();
-                return jsonContent;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "data connection error");
-                return ex.Message;
-            }
-
-        }
-        #endregion
 
     }
 }
