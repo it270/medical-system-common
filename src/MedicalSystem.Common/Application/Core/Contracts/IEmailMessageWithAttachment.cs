@@ -3,7 +3,7 @@
     /// <summary>
     /// Message contract for emails with attachments.
     /// </summary>
-    public interface IEmailMessageWithAttachment
+    public record IEmailMessageWithAttachment
     {
         // Propiedades consistentes con GeneralMessage
         string Name { get; } // Nombre del remitente o contexto (ej: "comite")

@@ -19,4 +19,9 @@ public class FileData
     /// File content data
     /// </summary>
     public byte[] File { get; set; }
+
+    /// <summary>
+    /// File url
+    /// </summary>
+    public string? FileUrl { get; set; }
 }
