@@ -1,3 +1,4 @@
+// EN It270.MedicalSystem.Common/Presentation/WebApi/Config/ConfigMessageBroker.cs
 using System;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -14,15 +15,57 @@ namespace It270.MedicalSystem.Common.Presentation.WebApi.Config;
 public static class ConfigMessageBroker
 {
     /// <summary>
-    /// Message broker setup (with RabbitMQ)
+    /// Configura el Message Broker con opciones básicas y auto-descubrimiento de consumidores
+    /// en el ensamblado de entrada de la aplicación.
     /// </summary>
-    /// <param name="services">Service descriptors collection</param>
-    /// <param name="configuration">System configuration</param>
-    /// <param name="configureEndpointsAction">Optional action to configure specific receive endpoints.</param> // <--- NUEVO PARÁMETRO
-    /// <returns>Service descriptors collection with custom services</returns>
+    /// <param name="services">Service descriptors collection.</param>
+    /// <param name="configuration">System configuration.</param>
+    /// <returns>Service descriptors collection con servicios personalizados.</returns>
+    public static IServiceCollection AddMessageBroker(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.AddMassTransit(busConfigurator =>
+        {
+            // SetKebabCaseEndpointNameFormatter debe ir aquí, antes de UsingRabbitMq
+            busConfigurator.SetKebabCaseEndpointNameFormatter();
+
+            busConfigurator.UsingRabbitMq((context, factoryConfigurator) => // Aquí obtenemos el 'context' de IRegistrationContext
+            {
+                // Configuración universal (serializador, host)
+                factoryConfigurator.ConfigureJsonSerializerOptions(opts =>
+                {
+                    opts.Converters.Add(new JsonStringEnumConverter());
+                    return opts;
+                });
+
+                string rabbitMqHost = Environment.GetEnvironmentVariable("SYSTEM_MB_HOST");
+                string rabbitMqUser = Environment.GetEnvironmentVariable("SYSTEM_MB_USER");
+                string rabbitMqPass = Environment.GetEnvironmentVariable("SYSTEM_MB_PASS");
+
+                factoryConfigurator.Host(rabbitMqHost, hostConfigurator =>
+                {
+                    hostConfigurator.Username(rabbitMqUser);
+                    hostConfigurator.Password(rabbitMqPass);
+                });
+
+                busConfigurator.AddConsumers(Assembly.GetEntryAssembly()); // addConsumers aquí
+                factoryConfigurator.ConfigureEndpoints(context); // El 'context' se pasa directamente desde la lambda de UsingRabbitMq
+            });
+        });
+    }
+
+    /// <summary>
+    /// Configura el Message Broker con opciones básicas y permite una configuración personalizada de consumidores/endpoints.
+    /// </summary>
+    /// <param name="services">Service descriptors collection.</param>
+    /// <param name="configuration">System configuration.</param>
+    /// <param name="customMassTransitConfig">
+    /// Acción para configurar MassTransit (registro de consumidores y endpoints) de forma personalizada.
+    /// Recibe el bus registration configurator y el bus factory configurator.
+    /// </param>
+    /// <returns>Service descriptors collection con servicios personalizados.</returns>
     public static IServiceCollection AddMessageBroker(this IServiceCollection services,
         IConfiguration configuration,
-        Action<IRabbitMqBusFactoryConfigurator, IRegistrationContext>? configureEndpointsAction = null) // <--- NUEVO PARÁMETRO
+        Action<IBusRegistrationConfigurator, IRabbitMqBusFactoryConfigurator, IRegistrationContext, string> customMassTransitConfig)
     {
         string rabbitMqHost = Environment.GetEnvironmentVariable("SYSTEM_MB_HOST");
         string rabbitMqUser = Environment.GetEnvironmentVariable("SYSTEM_MB_USER");
@@ -33,17 +76,12 @@ public static class ConfigMessageBroker
 
         services.AddMassTransit(busConfigurator =>
         {
-            // Add consumers by reflection
-            busConfigurator.AddConsumers(Assembly.GetEntryAssembly());
-
-            // MassTransit general setup
             busConfigurator.SetKebabCaseEndpointNameFormatter();
+
             busConfigurator.UsingRabbitMq((context, busFactoryConfigurator) =>
             {
-                // Json serializer setup
                 busFactoryConfigurator.ConfigureJsonSerializerOptions(opts =>
                 {
-                    // Add enumerator converter
                     opts.Converters.Add(new JsonStringEnumConverter());
                     return opts;
                 });
@@ -54,11 +92,7 @@ public static class ConfigMessageBroker
                     hostConfigurator.Password(rabbitMqPass);
                 });
 
-                // Configuración automática de endpoints
-                busFactoryConfigurator.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(projectName, false));
-
-                // <--- NUEVA LÍNEA: Ejecutar la acción de configuración de endpoints específicos
-                configureEndpointsAction?.Invoke(busFactoryConfigurator, context);
+                customMassTransitConfig?.Invoke(busConfigurator, busFactoryConfigurator, context, projectName);
             });
         });
 
