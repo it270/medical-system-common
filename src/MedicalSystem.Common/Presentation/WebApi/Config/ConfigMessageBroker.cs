@@ -18,9 +18,11 @@ public static class ConfigMessageBroker
     /// </summary>
     /// <param name="services">Service descriptors collection</param>
     /// <param name="configuration">System configuration</param>
+    /// <param name="configureEndpointsAction">Optional action to configure specific receive endpoints.</param> // <--- NUEVO PARÁMETRO
     /// <returns>Service descriptors collection with custom services</returns>
     public static IServiceCollection AddMessageBroker(this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        Action<IRabbitMqBusFactoryConfigurator, IRegistrationContext>? configureEndpointsAction = null) // <--- NUEVO PARÁMETRO
     {
         string rabbitMqHost = Environment.GetEnvironmentVariable("SYSTEM_MB_HOST");
         string rabbitMqUser = Environment.GetEnvironmentVariable("SYSTEM_MB_USER");
@@ -52,7 +54,11 @@ public static class ConfigMessageBroker
                     hostConfigurator.Password(rabbitMqPass);
                 });
 
+                // Configuración automática de endpoints
                 busFactoryConfigurator.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(projectName, false));
+
+                // <--- NUEVA LÍNEA: Ejecutar la acción de configuración de endpoints específicos
+                configureEndpointsAction?.Invoke(busFactoryConfigurator, context);
             });
         });
 
