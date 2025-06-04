@@ -16,7 +16,7 @@ namespace It270.MedicalSystem.Common.Application.Core.Entities.PDFinfo
         public string CenterCity { get; set; }
         public string CenterPresidentName { get; set; }
         public string Protocol { get; set; }
-        public List<StudySubmissionObservation> Description { get; set; }
+        public List<string> Description { get; set; }
         public string StudyPhase { get; set; }
         public List<Subject> Subjects { get; set; }
         public string SigningInvestigatorName { get; set; }
@@ -41,14 +41,4 @@ namespace It270.MedicalSystem.Common.Application.Core.Entities.PDFinfo
         public int CiomsReportTypeId { get; set; }
     }
 
-    public class StudySubmissionObservation
-    {
-        public int Id { get; set; }
-        public int StudySubmissionId { get; set; }
-        public string Note { get; set; }
-        public int CreatedByUserId { get; set; }
-        public int UpdatedByUserId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
 }
