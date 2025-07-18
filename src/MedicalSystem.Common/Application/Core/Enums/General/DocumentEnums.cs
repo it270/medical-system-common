@@ -78,5 +78,9 @@ public class DocumentEnums
         /// Registro mercantil
         /// </summary>
         RM,
+        /// <summary>
+        /// Registro Nacional del Contribuyente
+        /// </summary>
+        RNC,
     }
 }
