@@ -16,9 +16,9 @@ public class DocumentEnums
         NIT = 1,
 
         /// <summary>
-        /// Cédula de ciudadanía
+        /// Cédula de identificacion electoral
         /// </summary>
-        CC,
+        CIE,
 
         /// <summary>
         /// Cédula de extranjería
