@@ -19,7 +19,7 @@ public class StaticDataService : IStaticDataService
 {
     private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
-    private static readonly string _staticDataUrl = Environment.GetEnvironmentVariable("MS_STATIC_DATA_URL");
+    private static readonly string _staticDataUrl = Environment.GetEnvironmentVariable("https://besafe360/api/static_data");
 
     /// <summary>
     /// Constructor
