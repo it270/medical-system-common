@@ -26,6 +26,7 @@ jobs:
       - name: Setup external dependencies
         env:
           DEV_EXTREME_KEY: ${{ secrets.DEV_EXTREME_KEY }}
+          MS_STATIC_DATA_URL: ${{ secrets.MS_STATIC_DATA_URL }}
         run: dotnet nuget add source https://nuget.devexpress.com/$DEV_EXTREME_KEY/api
       - name: Build
         run: dotnet build --configuration Release /p:Version=${VERSION}
