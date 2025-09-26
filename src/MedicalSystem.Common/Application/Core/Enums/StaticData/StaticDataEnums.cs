@@ -298,7 +298,8 @@ namespace It270.MedicalSystem.Common.Application.Core.Enums.StaticData
             /// <summary>
             /// ControlNumber group
             /// </summary>
-            ControlNumber = 58
+            ControlNumber = 58,
+            OcupationRD= 354,
         }
     }
 }
