@@ -134,4 +134,59 @@ public class DocumentManagerTools : IDocumentManagerTools
     }
 
     #endregion
+    #region Validation functions
+
+    /// <summary>
+    /// Get boolean response from external microservice
+    /// </summary>
+    /// <param name="url">External service url</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>returns</returns>
+    public async Task<TemplateData> GetTemplateDataBasic(
+    Uri url,
+    CancellationToken ct = default)
+{
+    TemplateData response = null;
+
+    try
+    {
+        using (var client = _httpClientFactory.CreateClient())
+        {
+            var httpResponse = await client.GetAsync(url, ct);
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                _logger.Error($"Module connection: Response error: {{@httpResponse}}", new
+                {
+                    Module = _moduleName,
+                    httpResponse.StatusCode,
+                    httpResponse.ReasonPhrase,
+                    httpResponse.Content,
+                });
+
+                return null; // <-- NO false
+            }
+
+            var httpResponseContent = await httpResponse.Content.ReadAsStringAsync(ct);
+
+            var jsonOpts = GeneralConstants.DefaultJsonDeserializerOpts;
+            jsonOpts.Converters.Add(new JsonStringEnumConverter());
+
+            response = JsonSerializer.Deserialize<TemplateData>(
+                httpResponseContent,
+                jsonOpts);
+        }
+    }
+    catch (Exception ex)
+    {
+        _logger.Error(ex, $"Module connection: Exception. Request data: {{@debugData}}", new
+        {
+            Module = _moduleName,
+            Path = url,
+        });
+    }
+
+    return response;
+}
+    #endregion
 }
