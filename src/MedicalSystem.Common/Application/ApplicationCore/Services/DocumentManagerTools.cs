@@ -10,6 +10,10 @@ using It270.MedicalSystem.Common.Application.Core.Helpers.DocumentManager;
 using It270.MedicalSystem.Common.Application.Core.Helpers.General;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.Linq;
+using System.Net.Http.Headers;
 
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 
@@ -21,18 +25,21 @@ public class DocumentManagerTools : IDocumentManagerTools
     private readonly string _moduleName;
     private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
     /// Default constructor
     /// </summary>
     public DocumentManagerTools(ILogger logger,
         IConfiguration configuration,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+         IHttpContextAccessor httpContextAccessor)
     {
         var settings = configuration.Get<CustomConfig>();
         _moduleName = settings?.Project?.ModuleName ?? LogConstants.EmptyModuleName;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     #region Template functions
@@ -196,8 +203,19 @@ public class DocumentManagerTools : IDocumentManagerTools
 {
     try
     {
-        using (var client = _httpClientFactory.CreateClient())
+       using (var client = _httpClientFactory.CreateClient())
         {
+            var authorization =
+                _httpContextAccessor.HttpContext?
+                    .Request.Headers["Authorization"]
+                    .FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(authorization))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    AuthenticationHeaderValue.Parse(authorization);
+            }
+
             var httpResponse = await client.GetAsync(url, ct);
 
             if (!httpResponse.IsSuccessStatusCode)
