@@ -189,4 +189,49 @@ public class DocumentManagerTools : IDocumentManagerTools
     return response;
 }
     #endregion
+
+    public async Task<JsonDocument> GetJsonValue(
+    Uri url,
+    CancellationToken ct = default)
+{
+    try
+    {
+        using (var client = _httpClientFactory.CreateClient())
+        {
+            var httpResponse = await client.GetAsync(url, ct);
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                _logger.Error(
+                    $"Module connection: Response error: {{@httpResponse}}",
+                    new
+                    {
+                        Module = _moduleName,
+                        httpResponse.StatusCode,
+                        httpResponse.ReasonPhrase
+                    });
+
+                return null;
+            }
+
+            var content =
+                await httpResponse.Content.ReadAsStringAsync(ct);
+
+            return JsonDocument.Parse(content);
+        }
+    }
+    catch (Exception ex)
+    {
+        _logger.Error(
+            ex,
+            $"Module connection: Exception. Request data: {{@debugData}}",
+            new
+            {
+                Module = _moduleName,
+                Path = url
+            });
+
+        return null;
+    }
+}
 }

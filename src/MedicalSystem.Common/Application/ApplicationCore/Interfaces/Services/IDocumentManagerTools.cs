@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using It270.MedicalSystem.Common.Application.Core.Helpers.DocumentManager;
-
+using System.Text.Json;
 namespace It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.Services;
 
 /// <summary>
@@ -17,6 +17,7 @@ public interface IDocumentManagerTools
     /// <param name="ct">Cancellation token</param>
     /// <returns>External template data</returns>
     Task<TemplateParamValueHelper> GetTemplateDataExternal(Uri url, CancellationToken ct = default);
+    Task<JsonDocument> GetJsonValue(Uri url, CancellationToken ct = default);
 
     /// <summary>
     /// Get template data from external microservice
