@@ -10,6 +10,7 @@ using Amazon.S3.Transfer;
 using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.ExternalServices;
 using It270.MedicalSystem.Common.Application.Core.Helpers.Storage;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace It270.MedicalSystem.Common.Infrastructure.Infrastructure.Services;
@@ -22,15 +23,18 @@ public class StorageService : IStorageService
     private readonly ILogger _logger;
     private readonly IAmazonS3 _client;
     private readonly string _containerName;
+    private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Service constructor
     /// </summary>
     /// <param name="logger">Serilog logger</param>
-    public StorageService(ILogger logger)
+    /// <param name="configuration">Configuration for AWS credentials</param>
+    public StorageService(ILogger logger, IConfiguration configuration)
     {
         _logger = logger;
-        _containerName = Environment.GetEnvironmentVariable("AWS_STORAGE_BUCKET");
+        _configuration = configuration;
+        _containerName = _configuration["AWS_STORAGE_BUCKET"] ?? Environment.GetEnvironmentVariable("AWS_STORAGE_BUCKET");
         _client = InitClient();
     }
 
@@ -38,16 +42,16 @@ public class StorageService : IStorageService
     /// Initialize AWS client
     /// </summary>
     /// <returns>AWS client</returns>
-    private static AmazonS3Client InitClient()
+    private AmazonS3Client InitClient()
     {
-        var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY");
-        var secretkey = Environment.GetEnvironmentVariable("AWS_SECRET_KEY");
-        var region = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("AWS_STORAGE_REGION"));
+        var accessKey = _configuration["AWS_ACCESS_KEY"] ?? Environment.GetEnvironmentVariable("AWS_ACCESS_KEY");
+        var secretkey = _configuration["AWS_SECRET_KEY"] ?? Environment.GetEnvironmentVariable("AWS_SECRET_KEY");
+        var region = RegionEndpoint.GetBySystemName(_configuration["AWS_STORAGE_REGION"] ?? Environment.GetEnvironmentVariable("AWS_STORAGE_REGION"));
 
         var config = new AmazonS3Config
         {
             RegionEndpoint = region,
-            ServiceURL = Environment.GetEnvironmentVariable("AWS_STORAGE_URL"),
+            ServiceURL = _configuration["AWS_STORAGE_URL"] ?? Environment.GetEnvironmentVariable("AWS_STORAGE_URL"),
             UseHttp = true,
             ForcePathStyle = true,
             Timeout = new TimeSpan(0, 0, 10),
