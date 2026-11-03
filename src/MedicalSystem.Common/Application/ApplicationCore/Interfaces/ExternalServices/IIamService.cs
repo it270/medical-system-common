@@ -98,7 +98,7 @@ public interface IIamService
     /// Update a custom user attribute in Cognito
     /// </summary>
     /// <param name="userName">User name</param>
-    /// <param name="attributeName">Attribute name (e.g. custom:companyPolicy.MfaRequired)</param>
+    /// <param name="attributeName">Attribute name (e.g. custom:MfaRequired)</param>
     /// <param name="attributeValue">Attribute value</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>Process result</returns>

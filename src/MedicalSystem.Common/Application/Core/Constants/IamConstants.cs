@@ -49,7 +49,7 @@ public static class IamConstants
     /// <summary>
     /// MFA required custom attribute name
     /// </summary>
-    public const string MfaRequired = "custom:companyPolicy.MfaRequired";
+    public const string MfaRequired = "custom:MfaRequired";
 
     #endregion
 }
