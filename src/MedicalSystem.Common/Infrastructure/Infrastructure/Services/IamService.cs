@@ -12,6 +12,7 @@ using It270.MedicalSystem.Common.Application.ApplicationCore.Interfaces.External
 using It270.MedicalSystem.Common.Application.ApplicationCore.Services;
 using It270.MedicalSystem.Common.Application.Core.Constants;
 using It270.MedicalSystem.Common.Application.Core.Helpers.UserNS;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using static It270.MedicalSystem.Common.Application.Core.Enums.UserEnums;
 
@@ -26,30 +27,33 @@ public class IamService : IIamService
     private readonly string _userPoolId;
     private readonly string _clientId;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Service constructor
     /// </summary>
     /// <param name="logger">Serilog logger</param>
-    public IamService(ILogger logger)
+    /// <param name="configuration">Configuration for AWS credentials</param>
+    public IamService(ILogger logger, IConfiguration configuration)
     {
         _logger = logger;
+        _configuration = configuration;
         _client = InitClient();
-        _userPoolId = Environment.GetEnvironmentVariable("AWS_COGNITO_DEFAULT_POOL");
-        _clientId = Environment.GetEnvironmentVariable("AWS_COGNITO_CLIENT_ID");
+        _userPoolId = _configuration["AWS_COGNITO_DEFAULT_POOL"] ?? Environment.GetEnvironmentVariable("AWS_COGNITO_DEFAULT_POOL");
+        _clientId = _configuration["AWS_COGNITO_CLIENT_ID"] ?? Environment.GetEnvironmentVariable("AWS_COGNITO_CLIENT_ID");
     }
 
     /// <summary>
     /// Initialize AWS Cognito client
     /// </summary>
     /// <returns>AWS Cognito client</returns>
-    private static AmazonCognitoIdentityProviderClient InitClient()
+    private AmazonCognitoIdentityProviderClient InitClient()
     {
-        var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY");
-        var secretkey = Environment.GetEnvironmentVariable("AWS_SECRET_KEY");
+        var accessKey = _configuration["AWS_ACCESS_KEY"] ?? Environment.GetEnvironmentVariable("AWS_ACCESS_KEY");
+        var secretkey = _configuration["AWS_SECRET_KEY"] ?? Environment.GetEnvironmentVariable("AWS_SECRET_KEY");
         var credentials = new BasicAWSCredentials(accessKey, secretkey);
 
-        var region = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("AWS_COGNITO_REGION"));
+        var region = RegionEndpoint.GetBySystemName(_configuration["AWS_COGNITO_REGION"] ?? Environment.GetEnvironmentVariable("AWS_COGNITO_REGION"));
 
         return new(credentials, region);
     }
