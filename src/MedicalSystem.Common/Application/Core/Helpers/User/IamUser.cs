@@ -41,4 +41,9 @@ public class IamUser
     /// User last edition date
     /// </summary>
     public DateTime EditionDate { get; set; }
+
+    /// <summary>
+    /// Whether MFA is required for this user
+    /// </summary>
+    public bool? MfaRequired { get; set; }
 }

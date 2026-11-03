@@ -156,6 +156,7 @@ public class IamService : IIamService
 
             var response = await _client.AdminGetUserAsync(request, ct);
 
+            var mfaRequiredStr = GetAttributeValue(response.UserAttributes, IamConstants.MfaRequired);
             user = new()
             {
                 Sub = GetAttributeValue(response.UserAttributes, IamConstants.Sub),
@@ -165,6 +166,7 @@ public class IamService : IIamService
                 PhoneNumber = GetAttributeValue(response.UserAttributes, IamConstants.PhoneNumber),
                 CreationDate = response.UserCreateDate,
                 EditionDate = response.UserLastModifiedDate,
+                MfaRequired = bool.TryParse(mfaRequiredStr, out var mfaVal) ? mfaVal : false,
             };
         }
         catch (Exception ex)
@@ -202,6 +204,11 @@ public class IamService : IIamService
                 {
                     Name = "nickname",
                     Value = user.UserName,
+                },
+                new()
+                {
+                    Name = IamConstants.MfaRequired,
+                    Value = (user.MfaRequired ?? false).ToString().ToLower(),
                 }
             };
 
@@ -475,6 +482,49 @@ public class IamService : IIamService
         return successResult;
     }
 
+    /// <summary>
+    /// Update a custom user attribute in Cognito
+    /// </summary>
+    /// <param name="userName">User name</param>
+    /// <param name="attributeName">Attribute name</param>
+    /// <param name="attributeValue">Attribute value</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    public async Task<bool> UpdateUserAttribute(string userName, string attributeName, string attributeValue, CancellationToken ct = default)
+    {
+        bool successResult = false;
+
+        try
+        {
+            var request = new AdminUpdateUserAttributesRequest()
+            {
+                Username = userName,
+                UserPoolId = _userPoolId,
+                UserAttributes = new List<AttributeType>()
+                {
+                    new()
+                    {
+                        Name = attributeName,
+                        Value = attributeValue,
+                    }
+                }
+            };
+
+            var response = await _client.AdminUpdateUserAttributesAsync(request, ct);
+
+            successResult = response.HttpStatusCode == HttpStatusCode.OK;
+
+            if (successResult)
+                _logger.Information("Updated IAM user attribute {@userName} {@attributeName}={attributeValue}", userName, attributeName, attributeValue);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error: Update IAM user attribute {@userName} {@attributeName}", userName, attributeName);
+        }
+
+        return successResult;
+    }
+
     #endregion
 
     #region Role functions
@@ -611,6 +661,7 @@ public class IamService : IIamService
     /// <returns>User DTO data</returns>
     private static IamUser CastUserData(UserType userData)
     {
+        var mfaRequiredStr = GetAttributeValue(userData.Attributes, IamConstants.MfaRequired);
         return new()
         {
             Sub = GetAttributeValue(userData.Attributes, IamConstants.Sub),
@@ -620,6 +671,7 @@ public class IamService : IIamService
             PhoneNumber = GetAttributeValue(userData.Attributes, IamConstants.PhoneNumber),
             CreationDate = userData.UserCreateDate,
             EditionDate = userData.UserLastModifiedDate,
+            MfaRequired = bool.TryParse(mfaRequiredStr, out var mfaVal) ? mfaVal : false,
         };
     }
 

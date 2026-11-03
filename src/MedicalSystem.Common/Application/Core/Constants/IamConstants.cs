@@ -46,5 +46,10 @@ public static class IamConstants
     /// </summary>
     public const string PhoneNumber = "phone_number";
 
+    /// <summary>
+    /// MFA required custom attribute name
+    /// </summary>
+    public const string MfaRequired = "custom:companyPolicy.MfaRequired";
+
     #endregion
 }

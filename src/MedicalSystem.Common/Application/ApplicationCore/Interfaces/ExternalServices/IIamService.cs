@@ -94,6 +94,16 @@ public interface IIamService
     /// <returns>Process result</returns>
     Task<bool> DeleteUser(string userName, CancellationToken ct = default);
 
+    /// <summary>
+    /// Update a custom user attribute in Cognito
+    /// </summary>
+    /// <param name="userName">User name</param>
+    /// <param name="attributeName">Attribute name (e.g. custom:companyPolicy.MfaRequired)</param>
+    /// <param name="attributeValue">Attribute value</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Process result</returns>
+    Task<bool> UpdateUserAttribute(string userName, string attributeName, string attributeValue, CancellationToken ct = default);
+
     #endregion
 
     #region Role functions
